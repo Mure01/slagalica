@@ -53,19 +53,19 @@ const handleSocket = (socket, io) => {
 
   socket.on("refresh", ({ roomNameGet, id }) => {
     let roomFound = false;
-      console.log("liveGames", liveGames)
+    console.log("liveGames", liveGames)
     for (const [roomName, users] of Object.entries(rooms)) {
       if (users.includes(id)) {
-        console.log("liveGames", liveGames)
+        console.log("Soba pronadjena: ", roomName);
         roomFound = true;
-        const currentRoom = liveGames.find(game => game.roomName === roomNameGet)
+        const currentRoom = liveGames.find(game => game.roomName === roomName)
         socket.emit("roomJoinedRefresh", { roomNameGet, currentRoom, id });
         break;
       }
     }
     
     if (!roomFound) {
-      socket.emit("roomClosed", { message: "Niste u sobi. Vratite se na početnu." });
+      socket.emit("roomClosed", { message: "Soba je zatvorena, molimo vas vratite se na pocetnu i pocnite novu igru!" });
     }
   });
 

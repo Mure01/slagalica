@@ -7,7 +7,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { GameContext } from './context/GameContext';
 
-const socket = io('http://localhost:3000'); // URL backend servera
+const socket = io(import.meta.env.VITE_BACKEND_URL); // URL backend servera
 
 const App = () => {
     const {socketId,setSocketId} = useContext(GameContext)
@@ -24,7 +24,7 @@ const App = () => {
         socket.emit('createGameLink')
         socket.on('gameLinkCreated', (data) => {
             const linkElement = document.getElementById('linkGame');
-            linkElement.innerHTML = `http://localhost:5173/game/${data.roomName}`;
+            linkElement.innerHTML = `/game/${data.roomName}`;
             linkElement.href = `/game/${data.roomName}`;
             localStorage.setItem('id', data.id)
             setSocketId(data.id)

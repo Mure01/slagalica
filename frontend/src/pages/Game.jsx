@@ -9,7 +9,7 @@ import Asocijacija from "../components/Asocijacija";
 import { GameContext } from "../context/GameContext";
 import CircleLoader from 'react-spinners/CircleLoader'
 import GamePage from "../components/GamePage";
-const socket = io("http://localhost:3000"); // URL backend servera
+const socket = io(import.meta.env.VITE_BACKEND_URL); // URL backend servera
 
 const Game = () => {
   const [status, setStatus] = useState("");
@@ -186,9 +186,7 @@ const Game = () => {
         </div> :
       <>
       <div className="flex justify-between py-3 px-3">
-        <h1>Game</h1>
-        <p>{status}</p>
-        <p>"Igrac" {socketId}</p>
+        <p  className="text-center w-full uppercase text-xl">{gameName}</p>
       </div>
       <GamePage
         props={{

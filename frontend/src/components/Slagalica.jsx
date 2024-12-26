@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { io } from "socket.io-client";
 import { GameContext } from '../context/GameContext';
-const socket = io("http://localhost:3000"); // URL backend servera
+const socket = io(import.meta.env.VITE_BACKEND_URL); // URL backend servera
 
 const Slagalica = ({props}) => {
   const {socketId} = useContext(GameContext)
@@ -54,22 +54,24 @@ const Slagalica = ({props}) => {
 
   return (
     <>
-    <button className='bg-red-600 p-3 text-white uppercase cursor-pointer' onClick={() => goBack()}> <i className='fa fa-arrow-left'></i> back</button>
-    <div>Slagalica, {props.longestWord}</div>
+    <button className=' ml-5 mb-16 border-sky-600 border-2  p-4 rounded-full text-sky-600 absolute top-5 left-5 uppercase cursor-pointer' onClick={() => goBack()}> <i className='fa fa-arrow-left'></i></button>
+   <div className='min-h-[50vh] flex flex-col items-center mt-28'> 
+
     <p className='border-b w-10/12 m-auto pb-2 border-black text-center' >{word}</p>
     <p className={ isValid ? 'bg-green-700 text-center w-10/12 m-auto text-white uppercase my-4' : 'bg-red-600 text-center w-10/12 m-auto uppercase text-white my-4'}>{status}</p>
     <div className='flex items-center flex-wrap m-auto w-10/12 justify-around'>
     {
       props.letters.map((letter, index) => {
-    return<>
-         <p key={index} onClick={() => changeWord(letter)} className='text-2xl w-fit bg-sky-600 px-5 py-2 rounded-md text-white'>{letter}</p>
+        return<>
+         <p key={index} onClick={() => changeWord(letter)} className='text-2xl mb-4 w-fit bg-sky-600 px-5 py-2 rounded-md text-white'>{letter}</p>
         </>
       })
     }
 
     </div>
     <div className='w-full py-10 flex items-center'>
-      <button onClick={() => confirmWord()} className='w-fit m-auto bg-sky-600 text-white px-3 py-1 rounded-md'>Potvrdi rijec</button>
+      <button onClick={() => confirmWord()} className='w-fit m-auto bg-sky-600 text-white p-3 rounded-md'>Potvrdi rijec</button>
+    </div>
     </div>
     </>
   )
