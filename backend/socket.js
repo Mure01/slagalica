@@ -2,6 +2,7 @@ const {
   generateRandomLetters,
   isValidWord,
   longestWord,
+  generateNumbers,
 } = require("./games/slagalica");
 const rooms = {};
 const liveGames = require('./liveGames')
@@ -21,7 +22,7 @@ const handleSocket = (socket, io) => {
         kviz:0,
         spojnice: 0
       }
-    }, players: [], letters: [], longestWord: ""})
+    }, players: [], letters: [], longestWord: "", mainNumber: 0, arrayNumber: [], singleDigits: 0, extendedDigits:0 })
     socket.emit("gameLinkCreated", { roomName, id: socket.id });
   });
 
@@ -82,12 +83,27 @@ const handleSocket = (socket, io) => {
       if (rooms[roomName].length === 2) {
         const letters = generateRandomLetters();
         const longestWordSend = longestWord(letters);
+        const {
+          random999,
+          singleDigits,
+          randomDoubleDigit,
+          randomExtendedDigit
+        } = generateNumbers()
+
+        liveGames.find(game => game.roomName === roomName).mainNumber = random999
+        liveGames.find(game => game.roomName === roomName).arrayNumber = singleDigits
+        liveGames.find(game => game.roomName === roomName).singleDigits = randomDoubleDigit
+        liveGames.find(game => game.roomName === roomName).extendedDigits = randomExtendedDigit
         liveGames.find(game => game.roomName === roomName).letters = letters
         liveGames.find(game => game.roomName === roomName).longestWord = longestWordSend
         io.to(roomName).emit("roomReady", {
           roomName,
           letters,
           longestWordSend,
+          mainNumber: random999,
+          singleDigits,
+          extendedDigits: randomExtendedDigit,
+          randomDoubleDigit,
           players: liveGames.find(game => game.roomName === roomName).players
         });
       }

@@ -108,11 +108,24 @@ const Game = () => {
       }
     });
     // Obradi kada je soba spremna
-    socket.on("roomReady", ({ letters, longestWordSend, players }) => {
+    socket.on("roomReady", ({ letters, longestWordSend,
+      mainNumber,
+      singleDigits,
+      extendedDigits,
+      randomDoubleDigit,
+      players }) => {
       setStatus("Soba spremna! Igra može početi.");
       setGameReady(true);
       setLetters(letters);
       setLongestWord(longestWordSend);
+      /**  mainNumber: random999,
+          singleDigits,
+          extendedDigits: randomExtendedDigit,
+          randomDoubleDigit, */
+        localStorage.setItem("mainNumber", mainNumber);
+        localStorage.setItem("singleDigits", JSON.stringify(singleDigits));
+        localStorage.setItem("extendedDigits", extendedDigits);
+        localStorage.setItem("randomDoubleDigit", randomDoubleDigit);
       localStorage.setItem(
         "enemyPlayer",
         players.find((player) => player !== socketId)
@@ -130,6 +143,7 @@ const Game = () => {
     // Obradi kada drugi igrač napusti sobu
     socket.on("playerLeft", (data) => {
       setStatus("Protivnik je napustio sobu.");
+      setGameReady(false);
     });
     socket.on("fullRoom", () => {
       setStatus("Soba je popunjena kreirajte novu igru sa prijateljem!");
@@ -164,7 +178,7 @@ const Game = () => {
       case "Slagalica":
         return <Slagalica props={{ letters, longestWord, setGameName }} />;
       case "MojBroj":
-        return <MojBroj />;
+        return <MojBroj props={{setGameName}} />;
       case "Skocko":
         return <Skocko />;
       case "Spojnice":

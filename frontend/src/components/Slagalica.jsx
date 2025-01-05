@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { io } from "socket.io-client";
 import { GameContext } from '../context/GameContext';
+import BackOnTrack from '../assets/BackOnTrack';
 const socket = io(import.meta.env.VITE_BACKEND_URL); // URL backend servera
 
 const Slagalica = ({props}) => {
@@ -54,7 +55,7 @@ const Slagalica = ({props}) => {
 
   return (
     <>
-    <button className=' ml-5 mb-16 border-sky-600 border-2  p-4 rounded-full text-sky-600 absolute top-5 left-5 uppercase cursor-pointer' onClick={() => goBack()}> <i className='fa fa-arrow-left'></i></button>
+    <BackOnTrack setGameName={props.setGameName}/>
    <div className='min-h-[50vh] flex flex-col items-center mt-28'> 
 
     <p className='border-b w-10/12 m-auto pb-2 border-black text-center' >{word}</p>

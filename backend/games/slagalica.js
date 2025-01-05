@@ -71,5 +71,27 @@ try {
   console.error('Error:', error);
 }
 
+function generateNumbers() {
+  // Generisanje broja od 1-999
+  const random999 = Math.floor(Math.random() * 999) + 1;
 
-module.exports = { generateRandomLetters, isValidWord, longestWord };
+  // Generisanje pet jednoznamenkastih brojeva
+  const singleDigits = Array.from({ length: 5 }, () => Math.floor(Math.random() * 9) + 1);
+
+  // Generisanje jednog dvocifrenog broja (10, 15, 20, 50)
+  const doubleDigits = [10, 15, 20, 50];
+  const randomDoubleDigit = doubleDigits[Math.floor(Math.random() * doubleDigits.length)];
+
+  // Generisanje još jednog broja (10, 15, 20, 50, ili 100)
+  const extendedDoubleDigits = [...doubleDigits, 100];
+  const randomExtendedDigit = extendedDoubleDigits[Math.floor(Math.random() * extendedDoubleDigits.length)];
+
+  return {
+      random999,
+      singleDigits,
+      randomDoubleDigit,
+      randomExtendedDigit
+  };
+}
+
+module.exports = { generateRandomLetters, isValidWord, longestWord, generateNumbers };
