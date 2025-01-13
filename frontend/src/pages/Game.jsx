@@ -39,6 +39,8 @@ const Game = () => {
     setSocketId,
     longestWord,
     setLongestWord,
+    playedGames,
+    setPlayedGames
   } = useContext(GameContext);
   const updatePoints = (points) => {
     localStorage.setItem("points", JSON.stringify(points));
@@ -113,23 +115,21 @@ const Game = () => {
       singleDigits,
       extendedDigits,
       randomDoubleDigit,
+      skocko,
       players }) => {
       setStatus("Soba spremna! Igra može početi.");
       setGameReady(true);
       setLetters(letters);
       setLongestWord(longestWordSend);
-      /**  mainNumber: random999,
-          singleDigits,
-          extendedDigits: randomExtendedDigit,
-          randomDoubleDigit, */
         localStorage.setItem("mainNumber", mainNumber);
         localStorage.setItem("singleDigits", JSON.stringify(singleDigits));
         localStorage.setItem("extendedDigits", extendedDigits);
         localStorage.setItem("randomDoubleDigit", randomDoubleDigit);
-      localStorage.setItem(
+        localStorage.setItem(
         "enemyPlayer",
         players.find((player) => player !== socketId)
       );
+      localStorage.setItem('skocko', JSON.stringify(skocko))
       localStorage.setItem("letters", JSON.stringify(letters));
       localStorage.setItem("longestWord", longestWordSend);
       console.log("Soba spremna");
@@ -180,7 +180,7 @@ const Game = () => {
       case "MojBroj":
         return <MojBroj props={{setGameName}} />;
       case "Skocko":
-        return <Skocko />;
+        return <Skocko props={{setGameName}} />;
       case "Spojnice":
         return <Spojnice />;
       case "Kviz":
@@ -219,6 +219,8 @@ const Game = () => {
           enemySpojnicePoints,
           enemyKvizPoints,
           enemyAsocijacijaPoints,
+          playedGames,
+          setPlayedGames
         }}
       />
       </>

@@ -17,7 +17,11 @@ const App = () => {
         localStorage.removeItem('letters')
         localStorage.removeItem('longestWord')
         localStorage.removeItem('points')
-
+        localStorage.removeItem('skocko')
+        localStorage.removeItem('extendedDigits')
+        localStorage.removeItem('mainNumber')
+        localStorage.removeItem('randomDoubleDigit')
+        localStorage.removeItem('singleDigits')
     }, [])
 
     const createGame = () => {
@@ -51,7 +55,7 @@ const App = () => {
         <>
         <h1 className='text-center py-5 text-3xl font-semibold bg-sky-600 text-white'>SLAGALICA</h1>
           <div className='flex w-full justify-center min-h-[50vh] '>
-            <div className='w-1/2 p-6 min-h-full border-r-2 border-sky-600'>
+            <div className='hidden sm:block sm:w-1/2 p-6 min-h-full border-r-2 border-sky-600'>
              <h2 className='font-semibold text-2xl pb-5'>O igri</h2>
              <p className='pb-4'>
              Aparteko Slagalica je kviz igra koja postoji od 2011. Za kratko vreme postala je najpopularnija igra u regionu, obarajući sve rekorde u brzini rasta broja korisnika i pažnji koju je iznenada privukla. Ubrzo nakon pokretanja, praktično nije bilo učionice, prodavnice ili kafea u kom ljudi nisu igrali ili razgovarali o Slagalici.
@@ -63,7 +67,7 @@ const App = () => {
 
              </p>
             </div>
-            <div className='w-1/2 p-6 flex items-center flex-col '>
+            <div className='w-full sm:w-1/2 p-6 flex items-center flex-col '>
             <h2 className='py-3 text-xl font-semibold'>Singleplayer</h2>
             <button className='bg-sky-600 text-white p-3 rounded-md'>Započni igru</button>
 

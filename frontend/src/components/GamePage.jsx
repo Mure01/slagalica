@@ -1,6 +1,11 @@
 import React from 'react'
-
 const GamePage = ({props}) => {
+  const handleGameChange = (gameName) => {
+    if (props.playedGames.includes(gameName)) return
+    props.setGameName(gameName)
+    props.setPlayedGames([...props.playedGames, gameName])
+  }
+
   return (
     <>
       <div>
@@ -20,8 +25,8 @@ const GamePage = ({props}) => {
   ].map((game) => (
     <div
       key={game.name}
-      onClick={() => props.setGameName(game.name)}
-      className="flex space-x-4 w-11/12 sm:w-1/4 justify-between bg-sky-600 text-white p-4 rounded-md cursor-pointer"
+      onClick={() => handleGameChange(game.name)}
+      className={`flex space-x-4 w-11/12 sm:w-1/4 justify-between bg-sky-600 text-white p-4 rounded-md cursor-pointer ${props.playedGames.includes(game.name) ? "opacity-50 cursor-not-allowed" : ""}`}
     >
       <p>{game.name}</p>
       <div className="flex ">

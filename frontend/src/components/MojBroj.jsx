@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react'
+import { io } from "socket.io-client";
+import { GameContext } from '../context/GameContext';
 import Number from '../assets/Number';
 import BackOnTrack from '../assets/BackOnTrack';
+const socket = io(import.meta.env.VITE_BACKEND_URL); // URL backend servera
 
 const MojBroj = ({props}) => {
+    const {socketId} = useContext(GameContext)
   const [numbers, setNumbers] = useState([]);
+  const [clickedNumbers, setClickedNumbers] = useState([]);
   const [mainNumber, setMainNumber] = useState(0);
   const [extendedDigits, setExtendedDigits] = useState(0);
   const [randomDoubleDigit, setRandomDoubleDigit] = useState(0);
@@ -26,15 +31,24 @@ const MojBroj = ({props}) => {
       try {
       const evaluatedResult = eval(currentExpression); // Paziti na sigurnost ako se korisnički unos ne kontroliše
         setResult(evaluatedResult);
+        if(evaluatedResult == mainNumber) {
+          const roomName = window.location.pathname.split("/").pop();
+          socket.emit('gameConfirmed', {roomName, game: 'mojBroj', points: 25, socketId })
+          props.setGameName('')
+        }
       } catch {
         console.log('Invalid expression');
       }
     }
   }, [currentExpression]);
 
-  const handleNumberClick = (number) => {
-    setCurrentExpression((prev) => prev + number);
+  const handleNumberClick = (number, index) => {
+    if (!clickedNumbers.includes(index)) {
+      setCurrentExpression((prev) => prev + number);
+      setClickedNumbers((prev) => [...prev, index]);
+    }
   };
+  
 
   const handleOperationClick = (operation) => {
     setCurrentExpression((prev) => prev + operation);
@@ -42,8 +56,28 @@ const MojBroj = ({props}) => {
 
   const handleClear = () => {
     setCurrentExpression('');
+    setClickedNumbers([]);
     setResult(0);
   };
+  const handleSubmit = () => {
+    if(mainNumber-result === 1) {
+      const roomName = window.location.pathname.split("/").pop();
+      socket.emit('gameConfirmed', {roomName, game: 'mojBroj', points: 20, socketId })
+      props.setGameName('')
+    }else if( mainNumber - result < 4) {
+      const roomName = window.location.pathname.split("/").pop();
+      socket.emit('gameConfirmed', {roomName, game: 'mojBroj', points: 15, socketId })
+      props.setGameName('')
+    }else if(mainNumber - result < 6){
+      const roomName = window.location.pathname.split("/").pop();
+      socket.emit('gameConfirmed', {roomName, game: 'mojBroj', points: 10, socketId })
+      props.setGameName('')
+    }else {
+      const roomName = window.location.pathname.split("/").pop();
+      socket.emit('gameConfirmed', {roomName, game: 'mojBroj', points: 0, socketId })
+      props.setGameName('')
+    }
+  }
 
   return (
     <div>
@@ -59,22 +93,36 @@ const MojBroj = ({props}) => {
         {numbers.map((number, index) => (
           <div
           key={index}
-          className="sm:m-2 w-1/5 sm:w-fit text-center cursor-pointer"
-          onClick={() => handleNumberClick(number)}
-          >
+          className={`sm:m-2 w-1/5 sm:w-fit text-center cursor-pointer ${
+            clickedNumbers.includes(index) ? "cursor-not-allowed opacity-50" : ""
+          }`}
+          onClick={() => handleNumberClick(number, index)}
+        >
             <Number number={number} />
           </div>
         ))}
         </div>
-        <div className='flex w-full justify-center sm:w-4/5 flex-wrap'>
+        <div className='w-full flex items-center justify-center'>
 
-        <div className="m-2 w-2/5 sm:w-fit cursor-pointer" onClick={() => handleNumberClick(randomDoubleDigit)}>
-          <Number number={randomDoubleDigit} />
-        </div>
-        <div className="m-2 w-2/5 sm:w-fit cursor-pointer" onClick={() => handleNumberClick(extendedDigits)}>
-          <Number number={extendedDigits} />
-        </div>
-        </div>
+        <div
+  className={`m-2 w-2/5 sm:w-fit cursor-pointer ${
+    clickedNumbers.includes("randomDoubleDigit") ? "cursor-not-allowed opacity-50" : ""
+  }`}
+  onClick={() => handleNumberClick(randomDoubleDigit, "randomDoubleDigit")}
+>
+  <Number number={randomDoubleDigit} />
+</div>
+
+<div
+  className={`m-2 w-2/5 sm:w-fit cursor-pointer ${
+    clickedNumbers.includes("extendedDigits") ? "cursor-not-allowed opacity-50" : ""
+  }`}
+  onClick={() => handleNumberClick(extendedDigits, "extendedDigits")}
+>
+  <Number number={extendedDigits} />
+</div>
+
+  </div>
         </div>
       <div className="flex w-1/3 justify-between sm:w-fit flex-wrap box-border px-2 sm:p-2">
         {['+', '-', '*', '/', '(', ')'].map((op) => (
@@ -94,8 +142,12 @@ const MojBroj = ({props}) => {
         </button>
       </div>
           </div>
-      <p className="text-center mt-5 shadow-2xl bg-sky-600 w-11/12 p-2 rounded-md m-auto text-white min-h-12 "> {currentExpression}</p>
-      <p className="text-center shadow-2xl bg-sky-600 w-11/12 p-2 mt-3 text-white rounded-md m-auto min-h-12 "> {result}</p>
+      <div className="flex justify-center w-10/12 space-x-2 m-auto mt-5">
+      <p className="text-center w-3/4  shadow-2xl bg-sky-600 p-2 rounded-md m-auto text-white min-h-12 "> {currentExpression}</p>
+      <p className="text-center shadow-2xl bg-sky-600 w-1/4 p-2  text-white rounded-md m-auto min-h-12 "> {result}</p>
+        </div>
+      <button onClick={() => handleSubmit()} className="text-center mt-5 shadow-2xl bg-sky-600 w-10/12  p-2  text-white rounded-md m-auto min-h-12 "> Potvrdi</button>
+
     </div>
   );
 };

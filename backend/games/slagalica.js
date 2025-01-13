@@ -93,5 +93,8 @@ function generateNumbers() {
       randomExtendedDigit
   };
 }
-
-module.exports = { generateRandomLetters, isValidWord, longestWord, generateNumbers };
+const generateSkocko = () => {
+  const skocko = Array.from({ length: 4 }, () => Math.floor(Math.random() * 6) + 1);
+  return skocko;
+}
+module.exports = { generateRandomLetters, isValidWord, generateSkocko, longestWord, generateNumbers };

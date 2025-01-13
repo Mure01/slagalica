@@ -52,13 +52,19 @@ const Slagalica = ({props}) => {
     }
      
     }
-
+    const deleteLastLetter = () => {
+      setWord(prevWord => prevWord.slice(0, -1))
+    }
   return (
     <>
     <BackOnTrack setGameName={props.setGameName}/>
    <div className='min-h-[50vh] flex flex-col items-center mt-28'> 
 
+    <div className='flex items-center space-x-2 justify-between w-10/12 m-auto'>
+
     <p className='border-b w-10/12 m-auto pb-2 border-black text-center' >{word}</p>
+    <button onClick={() => deleteLastLetter()} className='bg-red-600 text-white p-2 rounded-md'>{'<-'}</button>
+    </div>
     <p className={ isValid ? 'bg-green-700 text-center w-10/12 m-auto text-white uppercase my-4' : 'bg-red-600 text-center w-10/12 m-auto uppercase text-white my-4'}>{status}</p>
     <div className='flex items-center flex-wrap m-auto w-10/12 justify-around'>
     {
