@@ -100,7 +100,7 @@ const Asocijacija = ({ props }) => {
             type="text"
           ></input>
           <p className="text-red-600">{greskaRjesenja}</p>
-          <div className="flex w-1/2 justify-between">
+          <div className="flex w-1/2  justify-between">
             <button
               onClick={() => setSelectedPlace("")}
               className="bg-red-500 text-white rounded-md px-2"
@@ -117,9 +117,9 @@ const Asocijacija = ({ props }) => {
         </div>
       )}
 
-      <div className="w-10/12 m-auto">
-        <div className="flex justify-between w-10/12 m-auto items-start">
-          <div className="flex flex-col space-y-2">
+      <div className="w-11/12 mt-20 sm:mt-5 m-auto">
+        <div className="flex justify-between w-full sm:w-10/12 m-auto items-start">
+          <div className="flex w-1/2 p-2 flex-col space-y-2">
             {poljeA.map((item, index) => {
               if (index < 4) {
                 return (
@@ -150,7 +150,7 @@ const Asocijacija = ({ props }) => {
               }
             })}
           </div>
-          <div className="flex flex-col space-y-2">
+          <div className="flex w-1/2 p-2 flex-col space-y-2">
             {poljeB.map((item, index) => {
               if (index < 4) {
                 return (
@@ -186,8 +186,8 @@ const Asocijacija = ({ props }) => {
               <p onClick={() => setSelectedPlace('konacno')} className="bg-sky-600 text-white min-w-24 text-center rounded-md">? ? ?</p>
         </div>
 
-        <div className="flex justify-between w-10/12 m-auto items-start">
-          <div className="flex flex-col space-y-2">
+        <div className="flex justify-between w-full sm:w-10/12 m-auto items-start">
+          <div className="flex w-1/2 p-2 flex-col space-y-2">
             {poljeC.map((item, index) => {
               if (index < 4) {
                 return (
@@ -218,7 +218,7 @@ const Asocijacija = ({ props }) => {
               }
             })}
           </div>
-          <div className="flex flex-col space-y-2">
+          <div className="flex w-1/2 p-2 flex-col space-y-2">
             {poljeD.map((item, index) => {
               if (index < 4) {
                 return (

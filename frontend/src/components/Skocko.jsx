@@ -101,7 +101,7 @@ const Skocko = ({ props }) => {
   return (
     <>
       <BackOnTrack setGameName={props.setGameName} />
-      <div className="flex items-center border-2 p-2 w-11/12 sm:w-1/2 m-auto space-x-1">
+      <div className="flex mt-7 items-center border-2 p-2 w-11/12 sm:w-1/2 m-auto space-x-1">
         <div className="w-full flex flex-col items-center ">
           {polja.map((polje, index) => {
             return (
@@ -110,7 +110,7 @@ const Skocko = ({ props }) => {
                   return (
                     <p
                       key={index}
-                      className="w-1/5 rounded-md p-2 bg-slate-400 min-h-10 sm:min-h-4"
+                      className="w-1/5 rounded-md p-2 min-h-10 sm:min-h-4"
                     >
                       <img
                         className="h-12 m-auto"
@@ -120,7 +120,7 @@ const Skocko = ({ props }) => {
                   );
                 })}
                 <div className="flex w-1/5 flex-col items-center">
-  <div className="flex items-center">
+  <div className="flex flex-wrap items-center">
     {feedback[index].map((color, i) => (
       <i
         key={i}
@@ -148,7 +148,7 @@ const Skocko = ({ props }) => {
             <button
               key={index}
               onClick={() => handleChange(number)}
-              className="w-fit p-2 bg-slate-400 rounded-md"
+              className="w-fit p-2 rounded-md"
             >
               <img className="h-12 m-auto" src={"/" + number + ".jfif"}></img>
             </button>

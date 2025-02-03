@@ -69,7 +69,7 @@ const Spojnice = ({ props }) => {
       <div>
         <h2 className="py-3 mb-3 uppercase text-center">{spojnica.naziv}</h2>
         <div className="flex justify-between w-10/12 m-auto">
-          <ul className="flex flex-col space-y-3">
+          <ul className="flex flex-col w-1/2 space-y-3">
             {leftSide.map((item, index) => {
               const pair = selectedItems.find(p => p.left === item);
               return <li
@@ -84,7 +84,7 @@ const Spojnice = ({ props }) => {
               </li>
 })}
           </ul>
-          <ul className="flex flex-col space-y-3">
+          <ul className="flex flex-col w-1/2 px-1 space-y-3">
             {rightSide.map((item, index) => {
               const pair = selectedItems.find(p => p.right === item);
               return <li

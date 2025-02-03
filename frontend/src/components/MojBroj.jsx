@@ -146,7 +146,9 @@ const MojBroj = ({props}) => {
       <p className="text-center w-3/4  shadow-2xl bg-sky-600 p-2 rounded-md m-auto text-white min-h-12 "> {currentExpression}</p>
       <p className="text-center shadow-2xl bg-sky-600 w-1/4 p-2  text-white rounded-md m-auto min-h-12 "> {result}</p>
         </div>
-      <button onClick={() => handleSubmit()} className="text-center mt-5 shadow-2xl bg-sky-600 w-10/12  p-2  text-white rounded-md m-auto min-h-12 "> Potvrdi</button>
+      <div className="flex justify-center w-10/12 space-x-2 m-auto mt-5">
+      <button onClick={() => handleSubmit()} className="text-center mt-5 shadow-2xl bg-sky-600 w-full  p-2  text-white rounded-md mx-auto min-h-12 "> Potvrdi</button>
+</div>
 
     </div>
   );
