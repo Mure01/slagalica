@@ -1,8 +1,3 @@
-// Instalacija potrebnih paketa (vite, react, socket.io-client)
-// Komanda: npm create vite@latest slagalica-frontend --template react
-// Zatim: cd slagalica-frontend && npm install socket.io-client
-
-// Postavljanje konekcije sa serverom
 import React, { useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { GameContext } from './context/GameContext';
@@ -36,7 +31,6 @@ const App = () => {
         })
     };
     
- // Kopiranje linka u clipboard
  const copyLink = () => {
     const gameLink = document.getElementById('linkGame').href;
     navigator.clipboard.writeText(gameLink).then(() => {
@@ -44,7 +38,6 @@ const App = () => {
     });
   };
 
-  // Dijeljenje na društvenim mrežama
   const shareOnFacebook = () => {
     const gameLink = document.getElementById('linkGame').href;
 

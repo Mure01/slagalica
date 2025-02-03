@@ -116,6 +116,8 @@ const Game = () => {
       extendedDigits,
       randomDoubleDigit,
       skocko,
+      spojnica,
+      asocijacija,
       players }) => {
       setStatus("Soba spremna! Igra može početi.");
       setGameReady(true);
@@ -132,6 +134,8 @@ const Game = () => {
       localStorage.setItem('skocko', JSON.stringify(skocko))
       localStorage.setItem("letters", JSON.stringify(letters));
       localStorage.setItem("longestWord", longestWordSend);
+      localStorage.setItem("spojnica", JSON.stringify(spojnica));
+      localStorage.setItem("asocijacija", JSON.stringify(asocijacija));
       console.log("Soba spremna");
     });
 
@@ -182,11 +186,11 @@ const Game = () => {
       case "Skocko":
         return <Skocko props={{setGameName}} />;
       case "Spojnice":
-        return <Spojnice />;
+        return <Spojnice props ={{setGameName}} />;
       case "Kviz":
         return <Kviz />;
       case "Asocijacije":
-        return <Asocijacija />;
+        return <Asocijacija props={{setGameName}} />;
       default:
         return null;
     }

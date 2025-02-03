@@ -1,9 +1,12 @@
+const asocijacije = require("./assets/asocijacije");
 const {
   generateRandomLetters,
   isValidWord,
   longestWord,
   generateNumbers,
-  generateSkocko
+  generateSpojnica,
+  generateSkocko,
+  generateAsocijacije
 } = require("./games/slagalica");
 const rooms = {};
 const liveGames = require('./liveGames')
@@ -23,7 +26,7 @@ const handleSocket = (socket, io) => {
         kviz:0,
         spojnice: 0
       }
-    }, players: [], skocko:[], letters: [], longestWord: "", mainNumber: 0, arrayNumber: [], singleDigits: 0, extendedDigits:0 })
+    }, players: [], skocko:[], asocijacija:{}, spojnica: {}, letters: [], longestWord: "", mainNumber: 0, arrayNumber: [], singleDigits: 0, extendedDigits:0 })
     socket.emit("gameLinkCreated", { roomName, id: socket.id });
   });
 
@@ -91,6 +94,8 @@ const handleSocket = (socket, io) => {
           randomExtendedDigit
         } = generateNumbers()
         const skocko = generateSkocko()
+        const spojnica = generateSpojnica()
+        const asocijacija = generateAsocijacije()
         liveGames.find(game => game.roomName === roomName).mainNumber = random999
         liveGames.find(game => game.roomName === roomName).arrayNumber = singleDigits
         liveGames.find(game => game.roomName === roomName).singleDigits = randomDoubleDigit
@@ -98,6 +103,8 @@ const handleSocket = (socket, io) => {
         liveGames.find(game => game.roomName === roomName).letters = letters
         liveGames.find(game => game.roomName === roomName).longestWord = longestWordSend
         liveGames.find(game => game.roomName === roomName).skocko = skocko
+        liveGames.find(game => game.roomName === roomName).spojnica = spojnica
+        liveGames.find(game => game.roomName === roomName).asocijacija = asocijacija
         io.to(roomName).emit("roomReady", {
           roomName,
           letters,
@@ -106,7 +113,9 @@ const handleSocket = (socket, io) => {
           singleDigits,
           extendedDigits: randomExtendedDigit,
           randomDoubleDigit,
+          spojnica,
           skocko,
+          asocijacija,
           players: liveGames.find(game => game.roomName === roomName).players
         });
       }
