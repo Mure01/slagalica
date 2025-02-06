@@ -4,6 +4,7 @@ import { io } from "socket.io-client";
 
 const socket = io(import.meta.env.VITE_BACKEND_URL); // URL backend servera
 import { GameContext } from '../context/GameContext';
+import Timer from './Timer';
 
 const shuffleArray = (array) => {
   return array
@@ -66,6 +67,8 @@ const Spojnice = ({ props }) => {
   return (
     <>
       <BackOnTrack setGameName={props.setGameName} />
+    <Timer setGameName={props.setGameName} gameName={"spojnice"} roomName={window.location.pathname.split("/").pop()} socketId={socketId} />
+
       <div>
         <h2 className="py-3 mb-3 uppercase text-center">{spojnica.naziv}</h2>
         <div className="flex justify-between w-10/12 m-auto">

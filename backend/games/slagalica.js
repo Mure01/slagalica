@@ -3,7 +3,7 @@ const fs = require('fs');
 const spojnice = require('../assets/spojnice')
 const asocijacije = require('../assets/asocijacije')
 const generateRandomLetters = () => {
-  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+  const alphabet = 'abcdefghijklmnoprstuvz';
   return Array.from({ length: 12 }, () =>
     alphabet[Math.floor(Math.random() * alphabet.length)]
   );

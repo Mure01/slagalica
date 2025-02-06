@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { GameContext } from '../context/GameContext';
 import BackOnTrack from "../assets/BackOnTrack";
+import Timer from "./Timer";
 const socket = io(import.meta.env.VITE_BACKEND_URL); // URL backend servera
 
 const Skocko = ({ props }) => {
@@ -98,22 +99,31 @@ const Skocko = ({ props }) => {
     }
   }, [currentRow])
 
+  const handleDelete = (r, k) => {
+    const updatedPolja = [...polja];
+    updatedPolja[r][k] = 0;
+    setPolja(updatedPolja);
+  }
+
   return (
     <>
       <BackOnTrack setGameName={props.setGameName} />
+    <Timer setGameName={props.setGameName} gameName={"skocko"} roomName={window.location.pathname.split("/").pop()} socketId={socketId} />
+
       <div className="flex mt-7 items-center border-2 p-2 w-11/12 sm:w-1/2 m-auto space-x-1">
         <div className="w-full flex flex-col items-center ">
-          {polja.map((polje, index) => {
+          {polja.map((polje, indexr) => {
             return (
-              <div key={index} className="flex w-full mb-5 space-x-1">
-                {polje.map((number, index) => {
+              <div key={indexr} className="flex w-full mb-5 space-x-1">
+                {polje.map((number, indexk) => {
                   return (
                     <p
-                      key={index}
+                      key={indexk}
                       className="w-1/5 rounded-md p-2 min-h-10 sm:min-h-4"
                     >
                       <img
                         className="h-12 m-auto"
+                        onClick={() => handleDelete(indexr, indexk)}
                         src={"/" + number + ".jfif"}
                       />
                     </p>
@@ -121,7 +131,7 @@ const Skocko = ({ props }) => {
                 })}
                 <div className="flex w-1/5 flex-col items-center">
   <div className="flex flex-wrap items-center">
-    {feedback[index].map((color, i) => (
+    {feedback[indexr].map((color, i) => (
       <i
         key={i}
         className={`rounded-full h-4 w-4 m-1 ${

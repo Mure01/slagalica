@@ -3,6 +3,7 @@ import { io } from "socket.io-client";
 import { GameContext } from '../context/GameContext';
 import Number from '../assets/Number';
 import BackOnTrack from '../assets/BackOnTrack';
+import Timer from './Timer';
 const socket = io(import.meta.env.VITE_BACKEND_URL); // URL backend servera
 
 const MojBroj = ({props}) => {
@@ -55,10 +56,23 @@ const MojBroj = ({props}) => {
   };
 
   const handleClear = () => {
-    setCurrentExpression('');
-    setClickedNumbers([]);
+    const updatedExpression = currentExpression.trim().match(/(\d+|\D)$/);
+    
+    if (updatedExpression) {
+      const lastEntry = updatedExpression[0]; // Posljednji unos (broj ili operator)
+  
+      if (!isNaN(lastEntry)) {
+        // Ako je broj, uklanjamo i iz clickedNumbers
+        setClickedNumbers((prev) => prev.slice(0, -1));
+      }
+  
+      // Ažuriraj izraz tako da ukloni posljednji broj ili operator
+      setCurrentExpression(currentExpression.slice(0, -lastEntry.length));
+    }
+  
     setResult(0);
   };
+  
   const handleSubmit = () => {
     if(mainNumber-result === 1) {
       const roomName = window.location.pathname.split("/").pop();
@@ -82,6 +96,8 @@ const MojBroj = ({props}) => {
   return (
     <div>
       <BackOnTrack setGameName={props.setGameName} />
+    <Timer setGameName={props.setGameName} gameName={"mojBroj"} roomName={window.location.pathname.split("/").pop()} socketId={socketId} />
+
       <div className='flex my-10 justify-center'>
 
       <Number number={mainNumber} />

@@ -101,8 +101,8 @@ const Game = () => {
     // Emituj događaj za pridruživanje sobi
     socket.on("roomJoinedRefresh", ({ roomName, currentRoom }) => {
       if (currentRoom.players.length === 2) {
-        console.log(currentRoom);
         setStatus("Soba spremna! Igra može početi.");
+        console.log("Soba refreshovana")
         setLetters(currentRoom.letters);
         setLongestWord(currentRoom.longestWord);
       } else {
@@ -136,7 +136,7 @@ const Game = () => {
       localStorage.setItem("longestWord", longestWordSend);
       localStorage.setItem("spojnica", JSON.stringify(spojnica));
       localStorage.setItem("asocijacija", JSON.stringify(asocijacija));
-      console.log("Soba spremna");
+      console.log("Soba spremna roomReady");
     });
 
     socket.on("pointsUpdated", ({ points }) => {
@@ -147,14 +147,12 @@ const Game = () => {
     // Obradi kada drugi igrač napusti sobu
     socket.on("playerLeft", (data) => {
       setStatus("Protivnik je napustio sobu.");
-      setGameReady(false);
     });
     socket.on("fullRoom", () => {
       setStatus("Soba je popunjena kreirajte novu igru sa prijateljem!");
     });
     socket.on("roomClosed", ({ message }) => {
       setStatus(message);
-      // Redirect or allow the user to create a new game
     });
 
     // Očisti eventove kada komponenta bude uništena

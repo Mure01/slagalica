@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { io } from "socket.io-client";
 import { GameContext } from '../context/GameContext';
 import BackOnTrack from '../assets/BackOnTrack';
+import Timer from './Timer';
 const socket = io(import.meta.env.VITE_BACKEND_URL); // URL backend servera
 
 const Slagalica = ({props}) => {
@@ -9,8 +10,10 @@ const Slagalica = ({props}) => {
   const [word,setWord] = useState('')
   const [isValid, setIsValid] = useState(false)
   const [status, setStatus] = useState('')
-  const changeWord = (l) => {
+  const [usedLetters, setUsedLetters] = useState([])
+  const changeWord = (l, i) => {
     setWord(prevWord => (prevWord+l))
+    setUsedLetters([...usedLetters, i])
    
   }
   const goBack  = () => {
@@ -54,10 +57,12 @@ const Slagalica = ({props}) => {
     }
     const deleteLastLetter = () => {
       setWord(prevWord => prevWord.slice(0, -1))
+      setUsedLetters(usedLetters.slice(0, -1))
     }
   return (
     <>
     <BackOnTrack setGameName={props.setGameName}/>
+    <Timer setGameName={props.setGameName} gameName={"slagalica"} roomName={window.location.pathname.split("/").pop()} socketId={socketId} />
    <div className='min-h-[50vh] flex flex-col items-center mt-28'> 
 
     <div className='flex items-center space-x-2 justify-between w-10/12 m-auto'>
@@ -70,7 +75,7 @@ const Slagalica = ({props}) => {
     {
       props.letters.map((letter, index) => {
         return<>
-         <p key={index} onClick={() => changeWord(letter)} className='text-2xl mb-4 w-fit bg-sky-600 px-5 py-2 rounded-md text-white'>{letter}</p>
+         <p key={index} onClick={ usedLetters.includes(index) ? '' : () => changeWord(letter, index)} className={`text-2xl mb-4 w-fit ${usedLetters.includes(index) ? 'bg-sky-400' : 'bg-sky-600'} px-5 py-2 rounded-md text-white `}>{letter}</p>
         </>
       })
     }

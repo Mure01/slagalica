@@ -15,6 +15,7 @@ export const GameProvider = (props) => {
       setSocketId(localStorage.getItem("id"));
     }else {
       setSocketId(id)
+      localStorage.setItem("id", id);
     }
   });
   return (
