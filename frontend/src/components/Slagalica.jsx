@@ -62,7 +62,7 @@ const Slagalica = ({props}) => {
   return (
     <>
     <BackOnTrack setGameName={props.setGameName}/>
-    <Timer setGameName={props.setGameName} gameName={"slagalica"} roomName={window.location.pathname.split("/").pop()} socketId={socketId} />
+    <Timer points={0} setGameName={props.setGameName} gameName={"slagalica"} roomName={window.location.pathname.split("/").pop()} socketId={socketId} />
    <div className='min-h-[50vh] flex flex-col items-center mt-28'> 
 
     <div className='flex items-center space-x-2 justify-between w-10/12 m-auto'>

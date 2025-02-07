@@ -108,7 +108,7 @@ const Skocko = ({ props }) => {
   return (
     <>
       <BackOnTrack setGameName={props.setGameName} />
-    <Timer setGameName={props.setGameName} gameName={"skocko"} roomName={window.location.pathname.split("/").pop()} socketId={socketId} />
+    <Timer points={0} setGameName={props.setGameName} gameName={"skocko"} roomName={window.location.pathname.split("/").pop()} socketId={socketId} />
 
       <div className="flex mt-7 items-center border-2 p-2 w-11/12 sm:w-1/2 m-auto space-x-1">
         <div className="w-full flex flex-col items-center ">

@@ -91,7 +91,7 @@ const Asocijacija = ({ props }) => {
   return (
     <>
       <BackOnTrack setGameName={props.setGameName} />
-    <Timer setGameName={props.setGameName} gameName={"asocijacija"} roomName={window.location.pathname.split("/").pop()} socketId={socketId} />
+    <Timer points={0} setGameName={props.setGameName} gameName={"asocijacija"} roomName={window.location.pathname.split("/").pop()} socketId={socketId} />
 
       {selectedPlace && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 space-y-3 flex-col w-1/2 z-10 flex justify-center items-center bg-sky-600 py-4 rounded-md text-white text-center">

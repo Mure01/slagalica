@@ -2,6 +2,7 @@ const SpellChecker = require('hunspell-spellchecker');
 const fs = require('fs');
 const spojnice = require('../assets/spojnice')
 const asocijacije = require('../assets/asocijacije')
+const kviz = require('../assets/kviz')
 const generateRandomLetters = () => {
   const alphabet = 'abcdefghijklmnoprstuvz';
   return Array.from({ length: 12 }, () =>
@@ -96,5 +97,18 @@ const generateAsocijacije = () => {
   const randomIndex = Math.floor(Math.random() * asocijacije.length);
   return asocijacije[randomIndex];
 }
+const generateKviz = () => {
+  const count = 10;
+  const questionsCopy = [...kviz];
 
-module.exports = { generateRandomLetters,generateAsocijacije, generateSpojnica, isValidWord, generateSkocko, longestWord, generateNumbers };
+  // Koristi Fisher-Yates algoritam za miješanje niza
+  for (let i = questionsCopy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [questionsCopy[i], questionsCopy[j]] = [questionsCopy[j], questionsCopy[i]];
+  }
+
+  return questionsCopy.slice(0, count);
+}
+
+
+module.exports = {generateKviz, generateRandomLetters,generateAsocijacije, generateSpojnica, isValidWord, generateSkocko, longestWord, generateNumbers };

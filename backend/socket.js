@@ -2,6 +2,7 @@ const {
   generateRandomLetters,
   isValidWord,
   longestWord,
+  generateKviz,
   generateNumbers,
   generateSpojnica,
   generateSkocko,
@@ -25,7 +26,7 @@ const handleSocket = (socket, io) => {
         kviz:0,
         spojnice: 0
       }
-    }, players: [], skocko:[], asocijacija:{}, spojnica: {}, letters: [], longestWord: "", mainNumber: 0, arrayNumber: [], singleDigits: 0, extendedDigits:0 })
+    }, players: [], kviz:[],  skocko:[], asocijacija:{}, spojnica: {}, letters: [], longestWord: "", mainNumber: 0, arrayNumber: [], singleDigits: 0, extendedDigits:0 })
     socket.emit("gameLinkCreated", { roomName, id: socket.id });
   });
 
@@ -104,7 +105,9 @@ const handleSocket = (socket, io) => {
                 const skocko = generateSkocko();
                 const spojnica = generateSpojnica();
                 const asocijacija = generateAsocijacije();
+                const kviz = generateKviz();
 
+                currentGame.kviz = kviz;
                 currentGame.mainNumber = random999;
                 currentGame.arrayNumber = singleDigits;
                 currentGame.singleDigits = randomDoubleDigit;
@@ -129,6 +132,7 @@ const handleSocket = (socket, io) => {
                 spojnica: currentGame.spojnica,
                 skocko: currentGame.skocko,
                 asocijacija: currentGame.asocijacija,
+                kviz: currentGame.kviz,
                 players: currentGame.players
             });
         }
@@ -147,37 +151,59 @@ const handleSocket = (socket, io) => {
     }
   })
 
-  socket.on("disconnect", () => {
-    console.log(`Korisnik odspojen: ${socket.id}`);
-    
-    for (const [roomName, users] of Object.entries(rooms)) {
-      if (users.includes(socket.userId)) {
-        rooms[roomName] = users.filter((id) => id !== socket.userId);
+socket.on("disconnect", () => {
+  console.log(`Korisnik odspojen: ${socket.id}`);
   
-        if (rooms[roomName].length === 0) {
-          delete rooms[roomName];
+  for (const [roomName, users] of Object.entries(rooms)) {
+    if (users.includes(socket.userId)) {
+      // Ukloni odspojenog igrača iz sobe
+      rooms[roomName] = users.filter((id) => id !== socket.userId);
 
+      const currentGame = liveGames.find(game => game.roomName === roomName);
+
+      if (rooms[roomName].length === 0) {
+        // Ako nema više igrača, obriši sobu
+        delete rooms[roomName];
+        if (currentGame) {
           const gameIndex = liveGames.findIndex(game => game.roomName === roomName);
           if (gameIndex !== -1) {
             liveGames.splice(gameIndex, 1);
           }
-        } else {
-          const currentGame = liveGames.find(game => game.roomName === roomName);
-          if (currentGame) {
-            currentGame.players = currentGame.players.filter(player => player !== socket.userId);
-          }
-  
-          io.to(roomName).emit("playerLeft", {
-            message: "Igrač je napustio sobu.",
-            remainingPlayers: currentGame ? currentGame.players : []
-          });
         }
-        break;
+      } else {
+        // Ako je ostao samo jedan igrač, osvježi podatke igre
+        if (currentGame) {
+          currentGame.players = currentGame.players.filter(player => player !== socket.userId);
+        }
+        // Emitiraj standardni događaj playerLeft
+        io.to(roomName).emit("playerLeft", {
+          message: "Igrač je napustio sobu.",
+          remainingPlayers: currentGame ? currentGame.players : []
+        });
+        // Ako u sobi ostane samo jedan igrač, automatski završi igru
+        /*
+        if (rooms[roomName].length === 1) {
+          io.to(roomName).emit("gameEnded", {
+            message: "Protivnik je napustio igru. Igra je završena.",
+            winner: rooms[roomName][0]
+          });
+          // Opcionalno: nakon nekog vremena obriši sobu iz evidencije
+          setTimeout(() => {
+            delete rooms[roomName];
+            const gameIndex = liveGames.findIndex(game => game.roomName === roomName);
+            if (gameIndex !== -1) {
+              liveGames.splice(gameIndex, 1);
+            }
+          }, 5000);
+        }*/
       }
+      break;
     }
-  
-    console.log("Sve sobe nakon odspajanja:", rooms);
-  });
+  }
+
+  console.log("Sve sobe nakon odspajanja:", rooms);
+});
+
   
 };
 

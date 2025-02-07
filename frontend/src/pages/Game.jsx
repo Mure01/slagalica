@@ -113,6 +113,7 @@ const Game = () => {
     socket.on("roomReady", ({ letters, longestWordSend,
       mainNumber,
       singleDigits,
+      kviz,
       extendedDigits,
       randomDoubleDigit,
       skocko,
@@ -136,6 +137,7 @@ const Game = () => {
       localStorage.setItem("longestWord", longestWordSend);
       localStorage.setItem("spojnica", JSON.stringify(spojnica));
       localStorage.setItem("asocijacija", JSON.stringify(asocijacija));
+      localStorage.setItem("kviz", JSON.stringify(kviz));
       console.log("Soba spremna roomReady");
     });
 
@@ -186,7 +188,7 @@ const Game = () => {
       case "Spojnice":
         return <Spojnice props ={{setGameName}} />;
       case "Kviz":
-        return <Kviz />;
+        return <Kviz props={{setGameName}} />;
       case "Asocijacije":
         return <Asocijacija props={{setGameName}} />;
       default:

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import {io} from 'socket.io-client';
 const socket = io(import.meta.env.VITE_BACKEND_URL); // URL backend servera
 
-const Timer = ({ setGameName, gameName, socketId, roomName }) => {
+const Timer = ({ setGameName, points, gameName, socketId, roomName }) => {
   const [seconds, setSeconds] = useState(60);
 
   useEffect(() => {
     if (seconds <= 0) {
-        socket.emit('gameConfirmed', {roomName, game: gameName, points: 0, socketId })
+        socket.emit('gameConfirmed', {roomName, game: gameName, points: points, socketId })
       setGameName('');
       return; 
     }
