@@ -69,7 +69,7 @@ const handleSocket = (socket, io) => {
     if(liveGames.length>0){
 
       if(
-        liveGames.find(game => game.roomName === roomNameGet).players.includes(id)
+        liveGames.find(game => game.roomName === roomNameGet)?.players.includes(id)
       ){
         console.log("Soba pronadjena: ", roomNameGet);
         roomFound = true;
