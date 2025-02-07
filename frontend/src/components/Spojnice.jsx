@@ -30,7 +30,7 @@ const Spojnice = ({ props }) => {
     setLeftSide(shuffleArray(left));
     setRightSide(shuffleArray(right));
   }, []);
-
+  
   const setSelected = (item, side) => {
     if(selectedItems.some((pair) => pair.left === item || pair.right === item)) return;
 
@@ -67,7 +67,7 @@ const Spojnice = ({ props }) => {
   return (
     <>
       <BackOnTrack setGameName={props.setGameName} />
-    <Timer points={points} setGameName={props.setGameName} gameName={"spojnice"} roomName={window.location.pathname.split("/").pop()} socketId={socketId} />
+    <Timer points={0} setGameName={props.setGameName} gameName={"spojnice"} roomName={window.location.pathname.split("/").pop()} socketId={socketId} />
 
       <div>
         <h2 className="py-3 mb-3 uppercase text-center">{spojnica.naziv}</h2>
