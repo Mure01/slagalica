@@ -16,6 +16,7 @@ const App = () => {
         localStorage.removeItem('extendedDigits')
         localStorage.removeItem('mainNumber')
         localStorage.removeItem('randomDoubleDigit')
+        localStorage.removeItem('playedGames')
         localStorage.removeItem('singleDigits')
     }, [])
 
@@ -61,8 +62,16 @@ const App = () => {
              </p>
             </div>
             <div className='w-full sm:w-1/2 p-6 flex items-center flex-col '>
-            <h2 className='py-3 text-xl font-semibold'>Singleplayer</h2>
-            <button className='bg-sky-600 text-white p-3 rounded-md'>Započni igru</button>
+            <h2 className='py-3 text-xl font-semibold'>
+              Singleplayer
+
+              </h2>
+            <button className='bg-sky-600 text-white p-3 rounded-md'>
+              <a href='/singleplayer'>
+              
+              Započni igru
+              </a>
+              </button>
 
             <h2 className='pt-6 pb-3 text-xl font-semibold'>Multiplayer</h2>
             <button onClick={createGame} className='bg-sky-600 text-white p-3 rounded-md'>Kreiraj link</button>

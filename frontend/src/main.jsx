@@ -5,6 +5,7 @@ import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 import App from './App.jsx'
 import Game from './pages/Game.jsx'
 import { GameProvider } from './context/GameContext.jsx'
+import SinglePlayerGame from './pages/SinglePlayerGame.jsx'
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,9 @@ const router = createBrowserRouter([
   {
     path:'/game/:gameId',
     element:<Game/>
+  },{
+    path:'/singleplayer',
+    element: <SinglePlayerGame/>
   }
 ])
 

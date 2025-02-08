@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext,useEffect, useRef } from "react";
 import BackOnTrack from "../assets/BackOnTrack";
 import { io } from "socket.io-client";
 import { GameContext } from '../context/GameContext';
@@ -20,6 +20,15 @@ const Asocijacija = ({ props }) => {
   const showItem = (item) => {
     setSelected([...selected, item]);
   };
+  const inputRef = useRef(null)
+  useEffect(() => {
+    if (selectedPlace) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100); 
+    }
+  }, [selectedPlace]);
+
   const checkAnswer = () => {
     if (selectedPlace === "A") {
       if (rjesenje.toUpperCase() === asocijacija.A.rjesenje) {
@@ -100,12 +109,13 @@ const Asocijacija = ({ props }) => {
             onChange={(e) => setRjesenje(e.target.value)}
             className="text-black"
             value={rjesenje}
+            ref={inputRef}
             type="text"
           ></input>
           <p className="text-red-600">{greskaRjesenja}</p>
           <div className="flex w-1/2  justify-between">
             <button
-              onClick={() => setSelectedPlace("")}
+              onClick={() => {setSelectedPlace("") ; setRjesenje(""); setGreskaRjesenja('')} }
               className="bg-red-500 text-white rounded-md px-2"
             >
               Odustani
@@ -128,7 +138,7 @@ const Asocijacija = ({ props }) => {
                 return (
                   <div
                     onClick={() => showItem(item)}
-                    className={`bg-sky-600 rounded-md text-white text-center cursor-pointer`}
+                    className={`bg-sky-600 p-1 rounded-md text-white text-center cursor-pointer`}
                     key={index}
                   >
                     { tacnaRjesenja.includes(asocijacija.A.rjesenje) ? item : selected.includes(item) ? item : "A" + (index + 1)}
@@ -137,7 +147,7 @@ const Asocijacija = ({ props }) => {
               } else {
                 return (
                   <div
-                    className={`rounded-md min-w-24 text-white text-center ${
+                    className={`rounded-md p-1 min-w-24 text-white text-center ${
                       tacnaRjesenja.includes(asocijacija.A.rjesenje)
                         ? "bg-green-600"
                         : "bg-sky-600"
@@ -159,7 +169,7 @@ const Asocijacija = ({ props }) => {
                 return (
                   <div
                     onClick={() => showItem(item)}
-                    className={`bg-sky-600 rounded-md text-white text-center cursor-pointer`}
+                    className={`bg-sky-600 p-1 rounded-md text-white text-center cursor-pointer`}
                     key={index}
                   >
                     { tacnaRjesenja.includes(asocijacija.B.rjesenje) ? item : selected.includes(item) ? item : "B" + (index + 1)}
@@ -168,7 +178,7 @@ const Asocijacija = ({ props }) => {
               } else {
                 return (
                   <div
-                    className={`rounded-md min-w-24 text-white text-center ${
+                    className={`rounded-md min-w-24 p-1 text-white text-center ${
                       tacnaRjesenja.includes(asocijacija.B.rjesenje)
                         ? "bg-green-600"
                         : "bg-sky-600"
@@ -186,7 +196,7 @@ const Asocijacija = ({ props }) => {
           </div>
         </div>
         <div className="w-full my-4 flex justify-center items-center">
-              <p onClick={() => setSelectedPlace('konacno')} className="bg-sky-600 text-white min-w-24 text-center rounded-md">? ? ?</p>
+              <p onClick={() => setSelectedPlace('konacno')} className="bg-sky-600 text-white min-w-[50%] p-1 text-center rounded-md">? ? ?</p>
         </div>
 
         <div className="flex justify-between w-full sm:w-10/12 m-auto items-start">
@@ -196,7 +206,7 @@ const Asocijacija = ({ props }) => {
                 return (
                   <div
                     onClick={() => showItem(item)}
-                    className={`bg-sky-600 rounded-md text-white text-center cursor-pointer`}
+                    className={`bg-sky-600 p-1 rounded-md text-white text-center cursor-pointer`}
                     key={index}
                   >
                     { tacnaRjesenja.includes(asocijacija.C.rjesenje) ? item : selected.includes(item) ? item : "C" + (index + 1)}
@@ -205,7 +215,7 @@ const Asocijacija = ({ props }) => {
               } else {
                 return (
                   <div
-                    className={`rounded-md min-w-24 text-white text-center ${
+                    className={`rounded-md p-1 min-w-24 text-white text-center ${
                       tacnaRjesenja.includes(asocijacija.C.rjesenje)
                         ? "bg-green-600"
                         : "bg-sky-600"
@@ -227,7 +237,7 @@ const Asocijacija = ({ props }) => {
                 return (
                   <div
                     onClick={() => showItem(item)}
-                    className={`bg-sky-600 rounded-md text-white text-center cursor-pointer`}
+                    className={`bg-sky-600 p-1 rounded-md text-white text-center cursor-pointer`}
                     key={index}
                   >
                     { tacnaRjesenja.includes(asocijacija.D.rjesenje) ? item : selected.includes(item) ? item : "D" + (index + 1)}
@@ -236,7 +246,7 @@ const Asocijacija = ({ props }) => {
               } else {
                 return (
                   <div
-                  className={`rounded-md min-w-24 text-white text-center ${
+                  className={`rounded-md p-1 min-w-24 text-white text-center ${
                     tacnaRjesenja.includes(asocijacija.D.rjesenje)
                       ? "bg-green-600"
                       : "bg-sky-600"

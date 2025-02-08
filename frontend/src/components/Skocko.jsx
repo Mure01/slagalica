@@ -20,7 +20,7 @@ const Skocko = ({ props }) => {
   const [feedback, setFeedback] = useState(
     Array(6).fill([0, 0, 0, 0]) 
   );
-  
+  const [showFeedback, setShowFeedback] = useState([false,false,false,false,false,false]);
   const [currentRow, setCurrentRow] = useState(0);
   const [currentPlace, setCurrentPlace] = useState(0);
   const calculatePoints = (feedbackRow) => {
@@ -38,58 +38,16 @@ const Skocko = ({ props }) => {
   
 
   const handleChange = (num) => {
+    if (currentPlace >= 4 || showFeedback[currentRow]) return; 
+  
     const updatedPolja = [...polja];
     updatedPolja[currentRow][currentPlace] = num;
     setPolja(updatedPolja);
+  
     setCurrentPlace(currentPlace + 1);
-  
-    if (currentPlace === 3) {
-      const newFeedback = [...feedback];
-      const rowFeedback = [0, 0, 0, 0];
-      const usedIndexes = [];
-  
-      for (let i = 0; i < 4; i++) {
-        if (polja[currentRow][i] === skocko[i]) {
-          rowFeedback[i] = 2; // Crvena (tačna pozicija)
-          usedIndexes.push(i);
-        }
-      }
-      for (let i = 0; i < 4; i++) {
-        if (
-          rowFeedback[i] !== 2 &&
-          skocko.includes(polja[currentRow][i]) &&
-          !usedIndexes.includes(skocko.indexOf(polja[currentRow][i]))
-        ) {
-          rowFeedback[i] = 1; // Žuta (pogrešna pozicija)
-          usedIndexes.push(skocko.indexOf(polja[currentRow][i]));
-        }
-      }
-  
-      newFeedback[currentRow] = rowFeedback;
-      setFeedback(newFeedback);
-  
-      if (JSON.stringify(updatedPolja[currentRow]) === JSON.stringify(skocko)) {
-        const points = calculatePoints(rowFeedback);
-        const roomName = window.location.pathname.split("/").pop();
-        socket.emit("gameConfirmed", { roomName, game: "skocko", points, socketId });
-        alert(`Pobjeda! Osvojili ste ${points} bodova.`);
-        props.setGameName("");
-        return;
-      }
-  
-      if (currentRow === 5) {
-        const points = calculatePoints(rowFeedback);
-      const roomName = window.location.pathname.split("/").pop();
-      socket.emit("gameConfirmed", { roomName, game: "skocko", points, socketId });
-      alert(`Kraj igre. Osvojili ste ${points} bodova.`);
-      props.setGameName("");
-      return;
-      }
-  
-      setCurrentRow(currentRow + 1);
-      setCurrentPlace(0);
-    }
   };
+  
+  
   
   useEffect(() => {
 
@@ -103,7 +61,63 @@ const Skocko = ({ props }) => {
     const updatedPolja = [...polja];
     updatedPolja[r][k] = 0;
     setPolja(updatedPolja);
+    if (r === currentRow) {
+      setCurrentPlace(k);
+    }
   }
+  const handleNextRow = (rowIndex) => {
+    if (rowIndex !== currentRow || currentPlace < 4) return; 
+  
+    const updatedPolja = [...polja];
+    const rowFeedback = [0, 0, 0, 0];
+    const usedIndexes = [];
+  
+    for (let i = 0; i < 4; i++) {
+      if (updatedPolja[currentRow][i] === skocko[i]) {
+        rowFeedback[i] = 2;
+        usedIndexes.push(i);
+      }
+    }
+  
+    for (let i = 0; i < 4; i++) {
+      if (
+        rowFeedback[i] !== 2 &&
+        skocko.includes(updatedPolja[currentRow][i]) &&
+        !usedIndexes.includes(skocko.indexOf(updatedPolja[currentRow][i]))
+      ) {
+        rowFeedback[i] = 1; 
+        usedIndexes.push(skocko.indexOf(updatedPolja[currentRow][i]));
+      }
+    }
+  
+    const newFeedback = [...feedback];
+    newFeedback[currentRow] = rowFeedback;
+    setFeedback(newFeedback);
+    setShowFeedback(showFeedback.map((value, index) => index === currentRow ? true : value));
+  
+    if (JSON.stringify(updatedPolja[currentRow]) === JSON.stringify(skocko)) {
+      const points = calculatePoints(rowFeedback);
+      const roomName = window.location.pathname.split("/").pop();
+      socket.emit("gameConfirmed", { roomName, game: "skocko", points, socketId });
+      alert(`Pobjeda! Osvojili ste ${points} bodova.`);
+      props.setGameName("");
+      return;
+    }
+  
+    if (currentRow < 5) {
+      setTimeout(() => {
+        setCurrentRow(currentRow + 1);
+        setCurrentPlace(0);
+      }, 1000);
+    } else {
+      const points = calculatePoints(rowFeedback);
+      const roomName = window.location.pathname.split("/").pop();
+      socket.emit("gameConfirmed", { roomName, game: "skocko", points, socketId });
+      alert(`Kraj igre. Osvojili ste ${points} bodova.`);
+      props.setGameName("");
+    }
+  };
+  
 
   return (
     <>
@@ -114,36 +128,45 @@ const Skocko = ({ props }) => {
         <div className="w-full flex flex-col items-center ">
           {polja.map((polje, indexr) => {
             return (
-              <div key={indexr} className="flex w-full mb-5 space-x-1">
+              <div key={indexr} className="flex w-11/12 mb-2 space-x-0">
                 {polje.map((number, indexk) => {
                   return (
                     <p
                       key={indexk}
                       className="w-1/5 rounded-md p-2 min-h-10 sm:min-h-4"
-                    >
+                    > 
+
+                    {
+                      number === 0 ?
+                      <div className="h-8 w-8 bg-sky-400 rounded-md"></div> :
                       <img
-                        className="h-12 m-auto"
-                        onClick={() => handleDelete(indexr, indexk)}
-                        src={"/" + number + ".jfif"}
+                      className="h-8 m-auto"
+                      onClick={() => handleDelete(indexr, indexk)}
+                      src={"/" + number + ".jfif"}
                       />
+                    }
                     </p>
                   );
                 })}
                 <div className="flex w-1/5 flex-col items-center">
+                {
+                  !showFeedback[indexr] ?  <button className="bg-slate-500 text-white mt-2 rounded-full h-8 w-8" onClick={() => handleNextRow(indexr)}>?</button> :  
   <div className="flex flex-wrap items-center">
     {feedback[indexr].map((color, i) => (
       <i
-        key={i}
-        className={`rounded-full h-4 w-4 m-1 ${
-          color === 2
-            ? "bg-red-600"
-            : color === 1
-            ? "bg-yellow-500"
-            : "bg-gray-400"
+      key={i}
+      className={`rounded-full h-4 w-4 m-1 ${
+        color === 2
+        ? "bg-red-600"
+        : color === 1
+        ? "bg-yellow-500"
+        : "bg-gray-400"
         }`}
-      ></i>
-    ))}
+        ></i>
+      ))}
   </div>
+    }
+
 </div>
 
               </div>

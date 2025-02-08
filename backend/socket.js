@@ -185,12 +185,152 @@ const handleSocket = (socket, io) => {
 
   socket.on("gameConfirmed", ({ game, roomName, points, socketId }) => {
     console.log(game, roomName, points, socketId);
-    const currentGame = liveGames.find((game) => game.roomName === roomName);
-    if (currentGame) {
+    console.log(liveGames.find((game) => game.roomName === `room-${socketId}`))
+    if(roomName == 'singleplayer') {
+      const currentGame = liveGames.find((game) => game.roomName === `room-${socketId}`)
+      if (currentGame) {
       currentGame.statistics[socketId][game] = points;
-      io.to(roomName).emit("pointsUpdated", { points: currentGame.statistics });
+      console.log("Postoji igra", currentGame.statistics[socketId])
+      io.to(socketId).emit("pointsUpdated", { points: currentGame.statistics });
+      }
+    }else {
+
+      const currentGame = liveGames.find((game) => game.roomName === roomName);
+      if (currentGame) {
+        currentGame.statistics[socketId][game] = points;
+        io.to(roomName).emit("pointsUpdated", { points: currentGame.statistics });
+      }
     }
   });
+
+  //Singleplayer
+
+  socket.on("singleRoom", ({id}) => {
+    let roomName = `room-${id}`;
+    rooms[roomName] = [id];
+    liveGames.push({
+      roomName,
+      live: true,
+      statistics: {
+        [id]: {
+          slagalica: 0,
+          mojBroj: 0,
+          skocko: 0,
+          asocijacije: 0,
+          kviz: 0,
+          spojnice: 0,
+        },
+      },
+      players: [id],
+      kviz: [],
+      skocko: [],
+      asocijacija: {},
+      spojnica: {},
+      letters: [],
+      longestWord: "",
+      mainNumber: 0,
+      arrayNumber: [],
+      singleDigits: 0,
+      extendedDigits: 0,
+    });
+    socket.emit("singleGameCreated", { roomName, id: id });
+    const currentGame = liveGames.find((game) => game.players.includes(id));
+    socket.join(id);
+      if (currentGame.players) {
+        if (currentGame.letters.length === 0) {
+          console.log("Generisanje novih podataka igre...");
+          const letters = generateRandomLetters();
+          const longestWordSend = longestWord(letters);
+          const {
+            random999,
+            singleDigits,
+            randomDoubleDigit,
+            randomExtendedDigit,
+          } = generateNumbers();
+          const skocko = generateSkocko();
+          const spojnica = generateSpojnica();
+          const asocijacija = generateAsocijacije();
+          const kviz = generateKviz();
+
+          currentGame.kviz = kviz;
+          currentGame.mainNumber = random999;
+          currentGame.arrayNumber = singleDigits;
+          currentGame.singleDigits = randomDoubleDigit;
+          currentGame.extendedDigits = randomExtendedDigit;
+          currentGame.letters = letters;
+          currentGame.longestWord = longestWordSend;
+          currentGame.skocko = skocko;
+          currentGame.spojnica = spojnica;
+          currentGame.asocijacija = asocijacija;
+        } else {
+          console.log("Igra je već generisana, ponovo šaljem podatke...");
+        }
+
+        socket.emit("roomReadySingle", {
+          roomName,
+          letters: currentGame.letters,
+          longestWordSend: currentGame.longestWord,
+          mainNumber: currentGame.mainNumber,
+          singleDigits: currentGame.arrayNumber,
+          extendedDigits: currentGame.extendedDigits,
+          randomDoubleDigit: currentGame.singleDigits,
+          spojnica: currentGame.spojnica,
+          skocko: currentGame.skocko,
+          asocijacija: currentGame.asocijacija,
+          kviz: currentGame.kviz,
+          players: currentGame.players,
+        });
+      }
+  });
+  socket.on('createDataSingle', ({roomName, id}) => {
+    const currentGame = liveGames.find((game) => game.roomName === roomName);
+
+    if (currentGame.players) {
+      if (currentGame.letters.length === 0) {
+        console.log("Generisanje novih podataka igre...");
+        const letters = generateRandomLetters();
+        const longestWordSend = longestWord(letters);
+        const {
+          random999,
+          singleDigits,
+          randomDoubleDigit,
+          randomExtendedDigit,
+        } = generateNumbers();
+        const skocko = generateSkocko();
+        const spojnica = generateSpojnica();
+        const asocijacija = generateAsocijacije();
+        const kviz = generateKviz();
+
+        currentGame.kviz = kviz;
+        currentGame.mainNumber = random999;
+        currentGame.arrayNumber = singleDigits;
+        currentGame.singleDigits = randomDoubleDigit;
+        currentGame.extendedDigits = randomExtendedDigit;
+        currentGame.letters = letters;
+        currentGame.longestWord = longestWordSend;
+        currentGame.skocko = skocko;
+        currentGame.spojnica = spojnica;
+        currentGame.asocijacija = asocijacija;
+      } else {
+        console.log("Igra je već generisana, ponovo šaljem podatke...");
+      }
+
+      socket.emit("roomReadySingle", {
+        roomName,
+        letters: currentGame.letters,
+        longestWordSend: currentGame.longestWord,
+        mainNumber: currentGame.mainNumber,
+        singleDigits: currentGame.arrayNumber,
+        extendedDigits: currentGame.extendedDigits,
+        randomDoubleDigit: currentGame.singleDigits,
+        spojnica: currentGame.spojnica,
+        skocko: currentGame.skocko,
+        asocijacija: currentGame.asocijacija,
+        kviz: currentGame.kviz,
+        players: currentGame.players,
+      });
+    }
+  })
 
   socket.on("disconnect", () => {
     console.log(`Korisnik odspojen: ${socket.id}`);

@@ -9,7 +9,7 @@ export const GameProvider = (props) => {
   const [letters, setLetters] = useState([]);
   const [longestWord, setLongestWord] = useState('');
   const [socketId, setSocketId] = useState(null); // Lokacija za čuvanje ID-a
-  const [playedGames, setPlayedGames] = useState([])
+  const [playedGames, setPlayedGames] = useState(localStorage.getItem("playedGames") ? JSON.parse(localStorage.getItem("playedGames")) : []);
   socket.on("connected", ({id}) => {
     if(localStorage.getItem('id')){
       setSocketId(localStorage.getItem("id"));

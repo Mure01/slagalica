@@ -34,9 +34,11 @@ const Spojnice = ({ props }) => {
   const setSelected = (item, side) => {
     if(selectedItems.some((pair) => pair.left === item || pair.right === item)) return;
 
+
     if (side === "left") {
       setSelectedLeft(item);
     } else {
+      if(!selectedLeft) return;
       setSelectedRight(item);
     }
   };
@@ -49,7 +51,12 @@ const Spojnice = ({ props }) => {
 
   const checkAnswer = () => {
     const isCorrect = spojnica.parovi[selectedLeft] === selectedRight;
-    setSelectedItems([...selectedItems, { left: selectedLeft, right: selectedRight, isCorrect }]);
+    if(!isCorrect){
+      setSelectedItems([...selectedItems, { left: selectedLeft, right: '', isCorrect }]);
+    }
+    else{
+      setSelectedItems([...selectedItems, { left: selectedLeft, right: selectedRight, isCorrect }]);
+    }
     setSelectedLeft(null);
     setSelectedRight(null);
   };
@@ -71,7 +78,7 @@ const Spojnice = ({ props }) => {
 
       <div>
         <h2 className="py-3 mb-3 uppercase text-center">{spojnica.naziv}</h2>
-        <div className="flex justify-between w-10/12 m-auto">
+        <div className="flex justify-between items-stretch w-10/12 m-auto">
           <ul className="flex flex-col w-1/2 space-y-3">
             {leftSide.map((item, index) => {
               const pair = selectedItems.find(p => p.left === item);

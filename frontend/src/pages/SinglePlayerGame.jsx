@@ -11,7 +11,7 @@ import CircleLoader from 'react-spinners/CircleLoader'
 import GamePage from "../components/GamePage";
 const socket = io(import.meta.env.VITE_BACKEND_URL); // URL backend servera
 
-const Game = () => {
+const SinglePlayerGame = () => {
   const [status, setStatus] = useState("");
   const [slagalicaPoints, setSlagalicaPoints] = useState(0);
   const [enemySlagalicaPoints, setEnemySlagalicaPoints] = useState(0);
@@ -62,7 +62,6 @@ const Game = () => {
       setEnemyAsocijacijaPoints(points[enemyPlayer].asocijacija || 0);
     }
   }
-const [points, setPoints] = React.useState(false)
   const [pointsPlayer1, setPointsPlayer1] = React.useState(0)
     const [pointsPlayer2, setPointsPlayer2] = React.useState(0)
   useEffect(() => {
@@ -78,18 +77,11 @@ const [points, setPoints] = React.useState(false)
   ])
 
   useEffect(() => {
-    // Sačuvaj ID korisnika kada se poveže
-    const gameId = window.location.pathname.split("/").pop();
-    // Izvuci `gameId` iz URL-a
-    if (!gameId) {
-      setStatus("Neispravan link.");
-      return;
-    }
     const storedSocketId = localStorage.getItem("id");
     // Provjeri je li stranica refreshana
     if (storedSocketId && letters) {
       setSocketId(storedSocketId);
-      socket.emit("refresh", { roomNameGet: gameId, id: storedSocketId });
+      socket.emit("refresh", {  id: storedSocketId });
     }
     const storedLetters = localStorage.getItem("letters");
     const storedLongestWord = localStorage.getItem("longestWord");
@@ -102,30 +94,12 @@ const [points, setPoints] = React.useState(false)
         updatePoints(points);
       }
     }
+    socket.emit('singleRoom', {id: socketId});
+    socket.on('singleGameCreated', ({roomName, id}) => {
+      socket.emit('createDataSingle', {roomName, id});
+    })
 
-    socket.emit("joinRoom", { roomName: gameId, id: socketId });
-    socket.on("roomJoined", ({ roomName, id }) => {
-      if (socketId) {
-        socket.emit("gameLink", { roomName, id: socketId });
-      } else {
-        localStorage.setItem("id", id);
-        setSocketId(id);
-        socket.emit("gameLink", { roomName, id });
-      }
-    });
-    // Emituj događaj za pridruživanje sobi
-    socket.on("roomJoinedRefresh", ({ roomName, currentRoom }) => {
-      if (currentRoom.players.length === 2) {
-        setStatus("Soba spremna! Igra može početi.");
-        console.log("Soba refreshovana")
-        setLetters(currentRoom.letters);
-        setLongestWord(currentRoom.longestWord);
-      } else {
-        setStatus("Čekanje protivnika...");
-      }
-    });
-    // Obradi kada je soba spremna
-    socket.on("roomReady", ({ letters, longestWordSend,
+    socket.on("roomReadySingle", ({ letters, longestWordSend,
       mainNumber,
       singleDigits,
       kviz,
@@ -157,12 +131,9 @@ const [points, setPoints] = React.useState(false)
     });
 
     socket.on("pointsUpdated", ({ points }) => {
-      console.log(points)
-      setPoints(!points)
       updatePoints(points);
     });
 
-    // Obradi kada drugi igrač napusti sobu
     socket.on("playerLeft", (data) => {
       setStatus("Protivnik je napustio sobu.");
     });
@@ -173,7 +144,6 @@ const [points, setPoints] = React.useState(false)
       setStatus(message);
     });
 
-    // Očisti eventove kada komponenta bude uništena
     return () => {
       socket.off("connect");
       socket.off("roomReady");
@@ -186,13 +156,6 @@ const [points, setPoints] = React.useState(false)
     };
   }, [socketId]);
 
-  if (socketId) {
-    const gameId = window.location.pathname.split("/").pop();
-    if (!gameId) {
-      setStatus("Neispravan link.");
-      return;
-    }
-  }
   const renderGame = () => {
     switch (gameName) {
       case "Slagalica":
@@ -238,10 +201,10 @@ const [points, setPoints] = React.useState(false)
           enemySkockoPoints,
           enemySpojnicePoints,
           enemyKvizPoints,
-          pointsPlayer1,
-          pointsPlayer2,
           enemyAsocijacijaPoints,
           playedGames,
+          pointsPlayer1,
+          pointsPlayer2,
           setPlayedGames
         }}
       />
@@ -251,4 +214,4 @@ const [points, setPoints] = React.useState(false)
   );
 };
 
-export default Game;
+export default SinglePlayerGame;
