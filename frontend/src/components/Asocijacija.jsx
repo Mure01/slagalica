@@ -7,7 +7,7 @@ const socket = io(import.meta.env.VITE_BACKEND_URL); // URL backend servera
 
 const Asocijacija = ({ props }) => {
   const asocijacija = JSON.parse(localStorage.getItem("asocijacija"));
-  const {socketId} = useContext(GameContext)
+  const {socketId, showAsocijacija} = useContext(GameContext)
   const [poljeA, setPoljeA] = useState(Object.values(asocijacija.A));
   const [poljeB, setPoljeB] = useState(Object.values(asocijacija.B));
   const [poljeC, setPoljeC] = useState(Object.values(asocijacija.C));
@@ -101,6 +101,25 @@ const Asocijacija = ({ props }) => {
     <>
       <BackOnTrack setGameName={props.setGameName} />
     <Timer points={0} setGameName={props.setGameName} gameName={"asocijacija"} roomName={window.location.pathname.split("/").pop()} socketId={socketId} />
+    {
+      showAsocijacija && <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 space-y-3 flex-col w-1/2 z-10 flex justify-center items-center bg-sky-600 py-4 rounded-md text-white text-center">
+        <p>Asocijacija je zavrsena</p>
+        <p>Rjesenja asocijacije su bila: </p>
+        <ul>
+          <li>A: {asocijacija.A.rjesenje}</li>
+          <li>B: {asocijacija.B.rjesenje}</li>
+          <li>C: {asocijacija.C.rjesenje}</li>
+          <li>D: {asocijacija.D.rjesenje}</li>
+          <li>Konacno: {asocijacija.glavno_rjesenje}</li>
+        </ul>
+        <button
+              onClick={() => {props.setGameName('')} }
+              className="bg-red-500 text-white rounded-md px-2"
+            >
+              Napusti
+            </button>
+      </div>
+    }
 
       {selectedPlace && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 space-y-3 flex-col w-1/2 z-10 flex justify-center items-center bg-sky-600 py-4 rounded-md text-white text-center">
