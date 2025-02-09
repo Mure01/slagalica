@@ -1,4 +1,4 @@
-[
+const asocijacije = [
     {
       "id": 1,
       "A": { "A1": "Koloseum", "A2": "Forum", "A3": "Vatikan", "A4": "Antika", "rjesenje": "RIM" },
@@ -401,3 +401,5 @@
     }
   ]
   
+
+  module.exports = asocijacije;
