@@ -1,8 +1,32 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { GameContext } from "./context/GameContext";
 
 const socket = io(import.meta.env.VITE_BACKEND_URL);
+
+// ⚡ constants outside component (no re-alloc every render)
+const LS_KEYS_TO_CLEAR = [
+  "id",
+  "enemyPlayer",
+  "letters",
+  "longestWord",
+  "points",
+  "skocko",
+  "extendedDigits",
+  "mainNumber",
+  "randomDoubleDigit",
+  "playedGames",
+  "singleDigits",
+];
+
+const GAME_CARDS = [
+  { t: "Slagalica", i: "🧩" },
+  { t: "Moj broj", i: "🔢" },
+  { t: "Kombinacije", i: "🎰" },
+  { t: "Spojnice", i: "🔗" },
+  { t: "Kviz", i: "❓" },
+  { t: "Asocijacije", i: "🧠" },
+];
 
 const App = () => {
   const { setSocketId } = useContext(GameContext);
@@ -10,30 +34,23 @@ const App = () => {
   const [roomName, setRoomName] = useState("");
   const [copied, setCopied] = useState(false);
 
+  const copiedTimerRef = useRef(null);
+
   const gameUrl = useMemo(() => {
-    if (!roomName) return "";
-    return `${window.location.origin}/game/${roomName}`;
+    return roomName ? `${window.location.origin}/game/${roomName}` : "";
   }, [roomName]);
 
+  // ✅ clean localStorage once
   useEffect(() => {
-    // clean localStorage
-    [
-      "id",
-      "enemyPlayer",
-      "letters",
-      "longestWord",
-      "points",
-      "skocko",
-      "extendedDigits",
-      "mainNumber",
-      "randomDoubleDigit",
-      "playedGames",
-      "singleDigits",
-    ].forEach((k) => localStorage.removeItem(k));
+    for (const k of LS_KEYS_TO_CLEAR) localStorage.removeItem(k);
+
+    return () => {
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+    };
   }, []);
 
+  // ✅ stable listener
   useEffect(() => {
-    // listener only once
     const onGameLinkCreated = (data) => {
       setRoomName(data.roomName);
       localStorage.setItem("id", data.id);
@@ -41,45 +58,62 @@ const App = () => {
     };
 
     socket.on("gameLinkCreated", onGameLinkCreated);
-
-    return () => {
-      socket.off("gameLinkCreated", onGameLinkCreated);
-    };
+    return () => socket.off("gameLinkCreated", onGameLinkCreated);
   }, [setSocketId]);
 
-  const createGame = () => {
-    setCopied(false);
-    socket.emit("createGameLink");
-  };
+  
 
-  const copyLink = async () => {
+
+const createGame = () => {
+  setCopied(false);
+  socket.emit("createGameLink");
+};
+
+  const copyLink = useCallback(async () => {
     if (!gameUrl) return;
-    await navigator.clipboard.writeText(gameUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  };
 
-  const shareOnFacebook = () => {
+    try {
+      await navigator.clipboard.writeText(gameUrl);
+      setCopied(true);
+
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+      copiedTimerRef.current = setTimeout(() => setCopied(false), 1500);
+    } catch (e) {
+      // fallback (older browsers)
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = gameUrl;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+
+        setCopied(true);
+        if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+        copiedTimerRef.current = setTimeout(() => setCopied(false), 1500);
+      } catch {
+        alert("Ne mogu kopirati link na ovom browseru. Kopiraj ručno: " + gameUrl);
+      }
+    }
+  }, [gameUrl]);
+
+  const shareOnFacebook = useCallback(() => {
     if (!gameUrl) return;
     window.open(
       `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(gameUrl)}`,
       "_blank"
     );
-  };
+  }, [gameUrl]);
 
-  // ✅ Messenger share (best effort):
-  // 1) m.me link works great on mobile + desktop (opens Messenger, user sends link)
-  // 2) fb-messenger://share is mobile-only (fallback)
-  const shareOnMessenger = () => {
+  const shareOnMessenger = useCallback(() => {
     if (!gameUrl) return;
 
-    // Prefer universal web entry
     const mMe = `https://m.me/?link=${encodeURIComponent(gameUrl)}`;
     window.open(mMe, "_blank");
-
-    // Optional: if you prefer deep-link on mobile:
-    // window.location.href = `fb-messenger://share?link=${encodeURIComponent(gameUrl)}`;
-  };
+  }, [gameUrl]);
 
   return (
     <>
@@ -98,7 +132,6 @@ const App = () => {
       {/* PAGE */}
       <div className="min-h-[85vh] px-4 py-10">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
-
           {/* LEFT: ABOUT */}
           <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 sm:p-10">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/30 border border-white/10 text-white/80 text-xs uppercase tracking-widest">
@@ -116,14 +149,7 @@ const App = () => {
             </p>
 
             <div className="mt-6 grid grid-cols-2 gap-4">
-              {[
-                { t: "Slagalica", i: "🧩" },
-                { t: "Moj broj", i: "🔢" },
-                { t: "Kombinacije", i: "🎰" },
-                { t: "Spojnice", i: "🔗" },
-                { t: "Kviz", i: "❓" },
-                { t: "Asocijacije", i: "🧠" },
-              ].map((x) => (
+              {GAME_CARDS.map((x) => (
                 <div
                   key={x.t}
                   className="rounded-2xl bg-black/25 border border-white/10 p-4 text-white shadow-inner"
@@ -231,15 +257,25 @@ const App = () => {
                   >
                     Messenger
                   </button>
+
+                  <button
+                    onClick={shareOnFacebook}
+                    disabled={!roomName}
+                    className={`py-3 rounded-2xl font-extrabold uppercase tracking-widest transition shadow
+                      ${roomName
+                        ? "bg-blue-600 text-white hover:scale-[1.02] active:scale-95"
+                        : "bg-blue-600/30 text-white/40 cursor-not-allowed"
+                      }`}
+                  >
+                    Facebook
+                  </button>
                 </div>
 
-                {/* TIP */}
                 <p className="mt-4 text-white/60 text-xs">
                   Messenger: klik na dugme otvara chat gdje samo zalijepiš i pošalješ link. Ako si na mobitelu, radi još brže.
                 </p>
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -248,3 +284,4 @@ const App = () => {
 };
 
 export default App;
+ 
