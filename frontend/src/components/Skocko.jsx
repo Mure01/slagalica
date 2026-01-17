@@ -120,75 +120,130 @@ const Skocko = ({ props }) => {
   
 
   return (
-    <>
-      <BackOnTrack setGameName={props.setGameName} />
-    <Timer points={0} setGameName={props.setGameName} gameName={"skocko"} roomName={window.location.pathname.split("/").pop()} socketId={socketId} />
+   <>
+  <BackOnTrack setGameName={props.setGameName} />
+  <Timer
+    points={0}
+    setGameName={props.setGameName}
+    gameName={"skocko"}
+    roomName={window.location.pathname.split("/").pop()}
+    socketId={socketId}
+  />
 
-      <div className="flex mt-7 items-center border-2 p-2 w-11/12 sm:w-1/2 m-auto space-x-1">
-        <div className="w-full flex flex-col items-center ">
-          {polja.map((polje, indexr) => {
-            return (
-              <div key={indexr} className="flex w-11/12 mb-2 space-x-0">
-                {polje.map((number, indexk) => {
-                  return (
-                    <p
-                      key={indexk}
-                      className="w-1/5 rounded-md p-2 min-h-10 sm:min-h-4"
-                    > 
+  <div className="min-h-[70vh] px-4 mt-10">
+    {/* BOARD WRAPPER */}
+    <div className="max-w-3xl mx-auto bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 sm:p-8">
 
-                    {
-                      number === 0 ?
-                      <div className="h-8 w-8 bg-sky-400 rounded-md"></div> :
-                      <img
-                      className="h-8 m-auto"
-                      onClick={() => handleDelete(indexr, indexk)}
-                      src={"/" + number + ".jfif"}
-                      />
+      {/* TITLE / HINT */}
+      <div className="text-center mb-6">
+        <h2 className="text-2xl sm:text-3xl font-extrabold tracking-widest uppercase text-white drop-shadow">
+          Skocko
+        </h2>
+        <p className="text-white/70 mt-2">
+          Klikni ikone dole da popuniš red. Klik na ikonu u redu briše.
+        </p>
+      </div>
+
+      {/* GRID */}
+      <div className="w-full flex flex-col items-center gap-3">
+        {polja.map((polje, indexr) => (
+          <div
+            key={indexr}
+            className="w-full flex items-center gap-3"
+          >
+            {/* ROW CELLS */}
+            <div className="flex-1 grid grid-cols-5 gap-2">
+              {polje.map((number, indexk) => (
+                <button
+                  key={indexk}
+                  onClick={() => number !== 0 && handleDelete(indexr, indexk)}
+                  className={`
+                    h-12 sm:h-14 rounded-2xl flex items-center justify-center
+                    border border-white/15 shadow-xl transition
+                    ${number === 0
+                      ? "bg-white/10 hover:bg-white/15"
+                      : "bg-gradient-to-br from-sky-500/70 to-blue-700/70 hover:scale-105 active:scale-95"
                     }
-                    </p>
-                  );
-                })}
-                <div className="flex w-1/5 flex-col items-center">
-                {
-                  !showFeedback[indexr] ?  <button className="bg-slate-500 text-white mt-2 rounded-full h-8 w-8" onClick={() => handleNextRow(indexr)}>?</button> :  
-  <div className="flex flex-wrap items-center">
-    {feedback[indexr].map((color, i) => (
-      <i
-      key={i}
-      className={`rounded-full h-4 w-4 m-1 ${
-        color === 2
-        ? "bg-red-600"
-        : color === 1
-        ? "bg-yellow-500"
-        : "bg-gray-400"
-        }`}
-        ></i>
-      ))}
+                  `}
+                >
+                  {number === 0 ? (
+                    <div className="h-7 w-7 rounded-xl bg-white/20 border border-white/20 shadow-inner" />
+                  ) : (
+                    <img
+                      className="h-9 sm:h-10 drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)]"
+                      src={"/" + number + ".jfif"}
+                      alt={"ikonica-" + number}
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* ACTION / FEEDBACK */}
+            <div className="w-24 flex items-center justify-center">
+              {!showFeedback[indexr] ? (
+                <button
+                  onClick={() => handleNextRow(indexr)}
+                  className="h-12 w-12 rounded-full font-extrabold text-xl text-white
+                    bg-gradient-to-br from-fuchsia-600 to-pink-700
+                    shadow-[0_0_25px_rgba(236,72,153,0.55)]
+                    hover:scale-110 active:scale-95 transition"
+                >
+                  ?
+                </button>
+              ) : (
+                <div className="grid grid-cols-2 gap-2 p-2 rounded-2xl bg-black/30 border border-white/10 shadow-inner">
+                  {feedback[indexr].map((color, i) => (
+                    <span
+                      key={i}
+                      className={`
+                        h-4 w-4 rounded-full shadow
+                        ${color === 2
+                          ? "bg-red-600 shadow-[0_0_12px_rgba(220,38,38,0.8)]"
+                          : color === 1
+                          ? "bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)]"
+                          : "bg-gray-300/60"
+                        }
+                      `}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* PICKER */}
+    <div className="max-w-3xl mx-auto mt-6 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-4 sm:p-6">
+      <div className="flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
+        {[1, 2, 3, 4, 5, 6].map((number, index) => (
+          <button
+            key={index}
+            onClick={() => handleChange(number)}
+            className="flex-1 min-w-[90px] h-16 sm:h-20 rounded-2xl
+              bg-gradient-to-br from-emerald-500/80 to-green-700/80
+              border border-white/15 shadow-xl
+              hover:scale-105 active:scale-95 transition
+              flex items-center justify-center"
+          >
+            <img
+              className="h-10 sm:h-12 drop-shadow-[0_8px_14px_rgba(0,0,0,0.4)]"
+              src={"/" + number + ".jfif"}
+              alt={"picker-" + number}
+            />
+          </button>
+        ))}
+      </div>
+
+      <div className="text-center  mt-4 text-sm">
+        Tip: Biraj pametno — feedback ti govori koliko je ikona tačno i na pravoj poziciji 😉
+      </div>
+    </div>
   </div>
-    }
+</>
 
-</div>
-
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="flex items-center m-auto justify-between space-x-2 w-11/12 sm:w-1/2">
-        {[1, 2, 3, 4, 5, 6].map((number, index) => {
-          return (
-            <button
-              key={index}
-              onClick={() => handleChange(number)}
-              className="w-fit p-2 rounded-md"
-            >
-              <img className="h-12 m-auto" src={"/" + number + ".jfif"}></img>
-            </button>
-          );
-        })}
-      </div>
-    </>
   );
 };
 

@@ -60,32 +60,90 @@ const Slagalica = ({props}) => {
       setUsedLetters(usedLetters.slice(0, -1))
     }
   return (
-    <>
-    <BackOnTrack setGameName={props.setGameName}/>
-    <Timer points={0} setGameName={props.setGameName} gameName={"slagalica"} roomName={window.location.pathname.split("/").pop()} socketId={socketId} />
-   <div className='min-h-[50vh] flex flex-col items-center mt-28'> 
+  <>
+  <BackOnTrack setGameName={props.setGameName} />
+  <Timer
+    points={0}
+    setGameName={props.setGameName}
+    gameName={"slagalica"}
+    roomName={window.location.pathname.split("/").pop()}
+    socketId={socketId}
+  />
 
-    <div className='flex items-center space-x-2 justify-between w-10/12 m-auto'>
+  <div className="min-h-[60vh] flex flex-col items-center mt-24 px-4">
 
-    <p className='border-b w-10/12 m-auto pb-2 border-black text-center' >{word}</p>
-    <button onClick={() => deleteLastLetter()} className='bg-red-600 text-white p-2 rounded-md'>{'<-'}</button>
-    </div>
-    <p className={ isValid ? 'bg-green-700 text-center w-10/12 m-auto text-white uppercase my-4' : 'bg-red-600 text-center w-10/12 m-auto uppercase text-white my-4'}>{status}</p>
-    <div className='flex items-center flex-wrap m-auto w-10/12 justify-around'>
-    {
-      props.letters.map((letter, index) => {
-        return<>
-         <p key={index} onClick={ usedLetters.includes(index) ? '' : () => changeWord(letter, index)} className={`text-2xl mb-4 w-fit ${usedLetters.includes(index) ? 'bg-sky-400' : 'bg-sky-600'} px-5 py-2 rounded-md text-white `}>{letter}</p>
-        </>
-      })
-    }
+    {/* GLAVNI CARD */}
+    <div className="w-full max-w-4xl bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8">
 
+      {/* RIJEC + DELETE */}
+      <div className="flex items-center gap-4 mb-6">
+        <div className="flex-1 text-center text-4xl font-extrabold tracking-widest uppercase py-4 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-lg">
+          {word || "— — — —"}
+        </div>
+
+        <button
+          onClick={deleteLastLetter}
+          className="h-16 w-16 flex items-center justify-center rounded-2xl bg-red-600 hover:bg-red-700 active:scale-95 transition text-white text-2xl font-bold shadow-lg"
+        >
+          ⌫
+        </button>
+      </div>
+
+      {/* STATUS */}
+      <div
+        className={`text-center text-lg font-bold uppercase py-3 rounded-xl mb-8 tracking-wide shadow-md
+          ${
+            isValid
+              ? "bg-green-600/90 text-white animate-pulse"
+              : "bg-red-600/90 text-white"
+          }
+        `}
+      >
+        {status}
+      </div>
+
+      {/* SLOVA */}
+      <div className="flex flex-wrap justify-center gap-4 mb-10">
+        {props.letters.map((letter, index) => {
+          const used = usedLetters.includes(index)
+
+          return (
+            <button
+              key={index}
+              disabled={used}
+              onClick={() => changeWord(letter, index)}
+              className={`
+                w-16 h-16 text-2xl font-extrabold uppercase rounded-2xl shadow-lg transition
+                ${
+                  used
+                    ? "bg-gray-500/50 text-gray-300 cursor-not-allowed"
+                    : "bg-gradient-to-br from-sky-500 to-blue-700 text-white hover:scale-110 hover:rotate-3 active:scale-95"
+                }
+              `}
+            >
+              {letter}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* CONFIRM BUTTON */}
+      <div className="flex justify-center">
+        <button
+          onClick={confirmWord}
+          className="px-12 py-4 text-xl font-extrabold uppercase rounded-full
+            bg-gradient-to-r from-emerald-500 to-green-600
+            text-white shadow-2xl
+            hover:scale-105 active:scale-95 transition
+            tracking-wide"
+        >
+          ✅ Potvrdi riječ
+        </button>
+      </div>
     </div>
-    <div className='w-full py-10 flex items-center'>
-      <button onClick={() => confirmWord()} className='w-fit m-auto bg-sky-600 text-white p-3 rounded-md'>Potvrdi rijec</button>
-    </div>
-    </div>
-    </>
+  </div>
+</>
+
   )
 }
 

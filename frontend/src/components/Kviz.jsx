@@ -40,48 +40,142 @@ const Kviz = ({ props }) => {
   };
 
   return (
-    <>
-      <BackOnTrack setGameName={props.setGameName} />
-      <Timer setGameName={props.setGameName} gameName={'kviz'} socketId={socketId} roomName={roomName} points={points} />
+   <>
+  <BackOnTrack setGameName={props.setGameName} />
+  <Timer
+    setGameName={props.setGameName}
+    gameName={"kviz"}
+    socketId={socketId}
+    roomName={roomName}
+    points={points}
+  />
 
-      <div className='mt-20'>
-        <div>
-          {kviz.map((pitanje, index) => {
-            if (index === currentQuestion) {
-              return (
-                <div key={index}>
-                  <p className='w-11/12 m-auto rounded-md mb-5 p-2 bg-sky-600 text-white text-center'>{pitanje.pitanje}</p>
-                  <div className='flex flex-wrap'>
-                    {pitanje.odgovori.map((odgovor, i) => {
-                      let bgColor = 'bg-sky-600'; // Default boja
-                      if (showFeedback) {
-                        if (i === selectedAnswer) {
-                          bgColor = odgovor === kviz[currentQuestion].tacanOdgovor ? 'bg-green-500' : 'bg-red-500';
-                        } else if (odgovor === kviz[currentQuestion].tacanOdgovor) {
-                          bgColor = 'bg-green-500';
-                        }
-                      }
+  <div className="min-h-[70vh] px-4 mt-20">
+    <div className="max-w-4xl mx-auto">
 
-                      return (
-                        <div className='w-1/2 p-1' key={i}>
-                          <button
-                            className={`${bgColor} text-white w-full rounded-md py-2`}
-                            onClick={() => !showFeedback && checkAnswer(i)} // Sprječava višestruke klikove
-                          >
-                            {odgovor}
-                          </button>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            }
-          })}
+      {/* TOP BAR: PROGRESS + SCORE */}
+      <div className="mb-6 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-5 sm:p-6">
+        <div className="flex items-center justify-between gap-4">
+          <div className="text-white">
+            <p className="text-xs uppercase tracking-widest text-white/70">Pitanje</p>
+            <p className="text-2xl font-extrabold">
+              {currentQuestion + 1} <span className="text-white/60">/ {kviz.length}</span>
+            </p>
+          </div>
+
+          <div className="text-right text-white">
+            <p className="text-xs uppercase tracking-widest text-white/70">Bodovi</p>
+            <p className="text-2xl font-extrabold">
+              {points}
+            </p>
+          </div>
+        </div>
+
+        {/* PROGRESS BAR */}
+        <div className="mt-4 h-3 rounded-full bg-black/30 overflow-hidden">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-sky-500 to-blue-700 transition-all duration-300"
+            style={{ width: `${((currentQuestion + 1) / kviz.length) * 100}%` }}
+          />
         </div>
       </div>
-      <p className='p-4 text-center mt-4'> Bodovi: {points} </p>
-    </>
+
+      {/* QUESTION + ANSWERS */}
+      <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 sm:p-10">
+        {kviz.map((pitanje, index) => {
+          if (index !== currentQuestion) return null;
+
+          return (
+            <div key={index}>
+              {/* QUESTION */}
+              <div className="mb-8">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/30 border border-white/10 text-white/80 text-xs uppercase tracking-widest">
+                  🎯 Kviz pitanje
+                </div>
+
+                <p className="mt-4 text-center text-white text-xl sm:text-2xl font-extrabold tracking-wide leading-snug
+                  bg-gradient-to-br from-sky-500/80 to-blue-700/80
+                  rounded-2xl p-5 shadow-xl border border-white/10">
+                  {pitanje.pitanje}
+                </p>
+              </div>
+
+              {/* ANSWERS */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {pitanje.odgovori.map((odgovor, i) => {
+                  let cls =
+                    "bg-gradient-to-br from-sky-500 to-blue-700 hover:scale-[1.02] active:scale-95";
+
+                  // FEEDBACK STATE
+                  if (showFeedback) {
+                    const isCorrect = odgovor === kviz[currentQuestion].tacanOdgovor;
+                    const isSelected = i === selectedAnswer;
+
+                    if (isCorrect) {
+                      cls =
+                        "bg-gradient-to-br from-emerald-500 to-green-700 shadow-[0_0_28px_rgba(16,185,129,0.6)]";
+                    } else if (isSelected && !isCorrect) {
+                      cls =
+                        "bg-gradient-to-br from-red-600 to-rose-700 shadow-[0_0_28px_rgba(220,38,38,0.55)]";
+                    } else {
+                      cls =
+                        "bg-white/10 text-white/50 cursor-not-allowed";
+                    }
+                  }
+
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => !showFeedback && checkAnswer(i)}
+                      disabled={showFeedback}
+                      className={`
+                        w-full min-h-[64px] rounded-2xl px-5 py-5
+                        text-white font-extrabold uppercase tracking-wide
+                        shadow-xl border border-white/10 transition
+                        ${cls}
+                      `}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-white/80 text-xs">
+                          Odgovor {String.fromCharCode(65 + i)}
+                        </span>
+                        {showFeedback && (odgovor === kviz[currentQuestion].tacanOdgovor) && (
+                          <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-black/30 border border-white/10">
+                            ✅ TAČNO
+                          </span>
+                        )}
+                        {showFeedback && i === selectedAnswer && (odgovor !== kviz[currentQuestion].tacanOdgovor) && (
+                          <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-black/30 border border-white/10">
+                            ❌ NETACNO
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="mt-2 text-lg sm:text-xl">
+                        {odgovor}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* FOOTER TIP */}
+              <div className="mt-8 text-center text-white/70 text-sm">
+                Savjet: Kad odabereš odgovor, sistem pokaže tačan (zeleno) i tvoj izbor.
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* BOTTOM SCORE (optional, keep if you want) */}
+      <p className="p-4 text-center mt-6 text-white/80 bg-black/20 rounded-2xl border border-white/10 shadow-inner max-w-4xl mx-auto">
+        Bodovi: <span className="font-extrabold text-white">{points}</span>
+      </p>
+    </div>
+  </div>
+</>
+
   );
 };
 

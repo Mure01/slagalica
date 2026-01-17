@@ -94,79 +94,131 @@ const MojBroj = ({props}) => {
   }
 
   return (
-    <div>
-      <BackOnTrack setGameName={props.setGameName} />
-    <Timer points={0} setGameName={props.setGameName} gameName={"mojBroj"} roomName={window.location.pathname.split("/").pop()} socketId={socketId} />
+  <div className="min-h-screen px-4 mt-20">
 
-      <div className='flex my-10 justify-center'>
+  <BackOnTrack setGameName={props.setGameName} />
+  <Timer
+    points={0}
+    setGameName={props.setGameName}
+    gameName={"mojBroj"}
+    roomName={window.location.pathname.split("/").pop()}
+    socketId={socketId}
+  />
 
-      <Number number={mainNumber} />
-      </div>
-      <div className="flex rounded-lg border-sky-600 shadow-2xl items-start border-t-2 py-5 sm:py-0 sm:w-10/12 m-auto sm:items-center sm:justify-center">
-        <div className='flex w-2/3 flex-wrap border-r-2 justify-center'>
-        <div className='flex w-full justify-center sm:w-4/5 flex-wrap'> 
-
-        {numbers.map((number, index) => (
-          <div
-          key={index}
-          className={`sm:m-2 w-1/5 sm:w-fit text-center cursor-pointer ${
-            clickedNumbers.includes(index) ? "cursor-not-allowed opacity-50" : ""
-          }`}
-          onClick={() => handleNumberClick(number, index)}
-        >
-            <Number number={number} />
-          </div>
-        ))}
-        </div>
-        <div className='w-full flex items-center justify-center'>
-
-        <div
-  className={`m-2 w-2/5 sm:w-fit cursor-pointer ${
-    clickedNumbers.includes("randomDoubleDigit") ? "cursor-not-allowed opacity-50" : ""
-  }`}
-  onClick={() => handleNumberClick(randomDoubleDigit, "randomDoubleDigit")}
->
-  <Number number={randomDoubleDigit} />
-</div>
-
-<div
-  className={`m-2 w-2/5 sm:w-fit cursor-pointer ${
-    clickedNumbers.includes("extendedDigits") ? "cursor-not-allowed opacity-50" : ""
-  }`}
-  onClick={() => handleNumberClick(extendedDigits, "extendedDigits")}
->
-  <Number number={extendedDigits} />
-</div>
-
+  {/* MAIN NUMBER */}
+  <div className="flex justify-center my-10">
+    <div className="p-6 rounded-3xl bg-gradient-to-br text-white from-purple-600 to-indigo-700 shadow-[0_0_60px_rgba(99,102,241,0.7)]">
+      {mainNumber}
+    </div>
   </div>
+
+  {/* GAME BOARD */}
+  <div className="max-w-6xl mx-auto bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6">
+
+    <div className="flex flex-col sm:flex-row gap-6">
+
+      {/* NUMBERS */}
+      <div className="flex-1 border-r border-white/20 pr-4">
+        <div className="flex flex-wrap justify-center gap-4 mb-6">
+          {numbers.map((number, index) => {
+            const used = clickedNumbers.includes(index)
+
+            return (
+              <button
+                key={index}
+                disabled={used}
+                onClick={() => handleNumberClick(number, index)}
+                className={`
+                  w-20 h-20 rounded-2xl text-white transition shadow-xl
+                  ${
+                    used
+                      ? "bg-gray-500/40 text-gray-300 cursor-not-allowed"
+                      : "bg-gradient-to-br from-sky-500 to-blue-700 hover:scale-110 active:scale-95"
+                  }
+                `}
+              >
+                {number}
+              </button>
+            )
+          })}
         </div>
-      <div className="flex w-1/3 justify-between sm:w-fit flex-wrap box-border px-2 sm:p-2">
-        {['+', '-', '*', '/', '(', ')'].map((op) => (
+
+        {/* EXTRA NUMBERS */}
+        <div className="flex justify-center gap-6">
+          {[ 
+            { val: randomDoubleDigit, key: "randomDoubleDigit" },
+            { val: extendedDigits, key: "extendedDigits" }
+          ].map(({ val, key }) => {
+            const used = clickedNumbers.includes(key)
+
+            return (
+              <button
+                key={key}
+                disabled={used}
+                onClick={() => handleNumberClick(val, key)}
+                className={`
+                  w-24 h-24 rounded-3xl text-white transition shadow-xl
+                  ${
+                    used
+                      ? "bg-gray-500/40 cursor-not-allowed"
+                      : "bg-gradient-to-br from-emerald-500 to-green-600 hover:scale-110 active:scale-95"
+                  }
+                `}
+              >
+                {val}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* OPERATORS */}
+      <div className="w-full sm:w-64 grid grid-cols-2 gap-4">
+        {['+', '-', '*', '/', '(', ')'].map(op => (
           <button
-          key={op}
-          className="w-2/5 mb-2 sm:m-2 bg-sky-600 text-white rounded-md p-2"
-          onClick={() => handleOperationClick(op)}
+            key={op}
+            onClick={() => handleOperationClick(op)}
+            className="h-16 text-2xl font-bold rounded-2xl bg-gradient-to-br from-fuchsia-600 to-pink-700 text-white shadow-xl hover:scale-110 active:scale-95 transition"
           >
             {op}
           </button>
         ))}
+
         <button
-          className="w-2/5 sm:m-2 bg-red-600 text-white rounded-md p-2"
           onClick={handleClear}
-          >
-          C
+          className="col-span-2 h-16 rounded-2xl bg-red-600 text-white font-bold shadow-xl hover:bg-red-700 transition"
+        >
+          ⛔ CLEAR
         </button>
       </div>
-          </div>
-      <div className="flex justify-center w-10/12 space-x-2 m-auto mt-5">
-      <p className="text-center w-3/4  shadow-2xl bg-sky-600 p-2 rounded-md m-auto text-white min-h-12 "> {currentExpression}</p>
-      <p className="text-center shadow-2xl bg-sky-600 w-1/4 p-2  text-white rounded-md m-auto min-h-12 "> {result}</p>
-        </div>
-      <div className="flex justify-center w-10/12 space-x-2 m-auto mt-5">
-      <button onClick={() => handleSubmit()} className="text-center mt-5 shadow-2xl bg-sky-600 w-full  p-2  text-white rounded-md mx-auto min-h-12 "> Potvrdi</button>
-</div>
 
     </div>
+  </div>
+
+  {/* EXPRESSION + RESULT */}
+  <div className="max-w-6xl mx-auto mt-6 flex gap-4">
+    <div className="flex-1 min-h-16 bg-black/40 rounded-2xl p-4 text-white text-xl font-mono shadow-inner">
+      {currentExpression || "Unesi izraz..."}
+    </div>
+    <div className="w-40 min-h-16 bg-emerald-600 rounded-2xl flex items-center justify-center text-2xl font-extrabold text-white shadow-xl">
+      {result}
+    </div>
+  </div>
+
+  {/* CONFIRM */}
+  <div className="max-w-6xl mx-auto mt-8">
+    <button
+      onClick={handleSubmit}
+      className="w-full py-5 text-2xl font-extrabold uppercase rounded-full
+      bg-gradient-to-r from-emerald-500 to-green-600
+      shadow-[0_0_40px_rgba(16,185,129,0.8)]
+      hover:scale-105 active:scale-95 transition"
+    >
+      🚀 POTVRDI RJEŠENJE
+    </button>
+  </div>
+</div>
+
   );
 };
 

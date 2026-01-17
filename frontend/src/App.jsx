@@ -1,93 +1,250 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { io } from 'socket.io-client';
-import { GameContext } from './context/GameContext';
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { io } from "socket.io-client";
+import { GameContext } from "./context/GameContext";
 
-const socket = io(import.meta.env.VITE_BACKEND_URL); // URL backend servera
+const socket = io(import.meta.env.VITE_BACKEND_URL);
 
 const App = () => {
-    const {socketId,setSocketId} = useContext(GameContext)
-    useEffect(() => {
-        localStorage.removeItem('id')
-        localStorage.removeItem('enemyPlayer')
-        localStorage.removeItem('letters')
-        localStorage.removeItem('longestWord')
-        localStorage.removeItem('points')
-        localStorage.removeItem('skocko')
-        localStorage.removeItem('extendedDigits')
-        localStorage.removeItem('mainNumber')
-        localStorage.removeItem('randomDoubleDigit')
-        localStorage.removeItem('playedGames')
-        localStorage.removeItem('singleDigits')
-    }, [])
+  const { setSocketId } = useContext(GameContext);
 
-    const createGame = () => {
-        socket.emit('createGameLink')
-        socket.on('gameLinkCreated', (data) => {
-            const linkElement = document.getElementById('linkGame');
-            linkElement.innerHTML = `/game/${data.roomName}`;
-            linkElement.href = `/game/${data.roomName}`;
-            localStorage.setItem('id', data.id)
-            setSocketId(data.id)
-            console.log(`Generisan link: /game/${data}`);
-        })
+  const [roomName, setRoomName] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const gameUrl = useMemo(() => {
+    if (!roomName) return "";
+    return `${window.location.origin}/game/${roomName}`;
+  }, [roomName]);
+
+  useEffect(() => {
+    // clean localStorage
+    [
+      "id",
+      "enemyPlayer",
+      "letters",
+      "longestWord",
+      "points",
+      "skocko",
+      "extendedDigits",
+      "mainNumber",
+      "randomDoubleDigit",
+      "playedGames",
+      "singleDigits",
+    ].forEach((k) => localStorage.removeItem(k));
+  }, []);
+
+  useEffect(() => {
+    // listener only once
+    const onGameLinkCreated = (data) => {
+      setRoomName(data.roomName);
+      localStorage.setItem("id", data.id);
+      setSocketId(data.id);
     };
-    
- const copyLink = () => {
-    const gameLink = document.getElementById('linkGame').href;
-    navigator.clipboard.writeText(gameLink).then(() => {
-      alert('Link je kopiran u clipboard!');
-    });
+
+    socket.on("gameLinkCreated", onGameLinkCreated);
+
+    return () => {
+      socket.off("gameLinkCreated", onGameLinkCreated);
+    };
+  }, [setSocketId]);
+
+  const createGame = () => {
+    setCopied(false);
+    socket.emit("createGameLink");
+  };
+
+  const copyLink = async () => {
+    if (!gameUrl) return;
+    await navigator.clipboard.writeText(gameUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
   };
 
   const shareOnFacebook = () => {
-    const gameLink = document.getElementById('linkGame').href;
-
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(gameLink)}`, '_blank');
+    if (!gameUrl) return;
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(gameUrl)}`,
+      "_blank"
+    );
   };
 
-    return (
-        <>
-        <h1 className='text-center py-5 text-3xl font-semibold bg-sky-600 text-white'>SLAGALICA</h1>
-          <div className='flex w-full justify-center min-h-[50vh] '>
-            <div className='hidden sm:block sm:w-1/2 p-6 min-h-full border-r-2 border-sky-600'>
-             <h2 className='font-semibold text-2xl pb-5'>O igri</h2>
-             <p className='pb-4'>
-             Aparteko Slagalica je kviz igra koja postoji od 2011. Za kratko vreme postala je najpopularnija igra u regionu, obarajući sve rekorde u brzini rasta broja korisnika i pažnji koju je iznenada privukla. Ubrzo nakon pokretanja, praktično nije bilo učionice, prodavnice ili kafea u kom ljudi nisu igrali ili razgovarali o Slagalici.
+  // ✅ Messenger share (best effort):
+  // 1) m.me link works great on mobile + desktop (opens Messenger, user sends link)
+  // 2) fb-messenger://share is mobile-only (fallback)
+  const shareOnMessenger = () => {
+    if (!gameUrl) return;
 
+    // Prefer universal web entry
+    const mMe = `https://m.me/?link=${encodeURIComponent(gameUrl)}`;
+    window.open(mMe, "_blank");
 
-             </p>
-             <p>
-             Slagalica se sastoji od sekvence šest kratkih igara (Slagalica, Moj broj, Kombinacije, Spojnice, Kviz znanja i Asocijacije) u trajanju 10-12 minuta. Igrači koriste znanje i taktiku kako bi pobedili protivnika u direktnom duelu – u regularnoj partiji ili na turniru.
+    // Optional: if you prefer deep-link on mobile:
+    // window.location.href = `fb-messenger://share?link=${encodeURIComponent(gameUrl)}`;
+  };
 
-             </p>
+  return (
+    <>
+      {/* TOP BAR */}
+      <div className="sticky top-0 z-30 bg-gradient-to-r from-sky-600 to-blue-700 shadow-2xl border-b border-white/10">
+        <div className="max-w-6xl mx-auto px-4 py-5 flex items-center justify-between">
+          <h1 className="text-white text-2xl sm:text-3xl font-extrabold tracking-widest uppercase">
+            Slagalica
+          </h1>
+          <div className="hidden sm:flex items-center gap-2 text-white/80 text-xs uppercase tracking-widest">
+            🎮 Single & Multiplayer
+          </div>
+        </div>
+      </div>
+
+      {/* PAGE */}
+      <div className="min-h-[85vh] px-4 py-10">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+          {/* LEFT: ABOUT */}
+          <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 sm:p-10">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/30 border border-white/10 text-white/80 text-xs uppercase tracking-widest">
+              ℹ️ O igri
             </div>
-            <div className='w-full sm:w-1/2 p-6 flex items-center flex-col '>
-            <h2 className='py-3 text-xl font-semibold'>
-              Singleplayer
 
-              </h2>
-            <button className='bg-sky-600 text-white p-3 rounded-md'>
-              <a href='/singleplayer'>
-              
-              Započni igru
-              </a>
-              </button>
+            <h2 className="mt-5 text-2xl sm:text-3xl font-extrabold tracking-widest uppercase">
+              Šest igara. Jedan duel.
+            </h2>
 
-            <h2 className='pt-6 pb-3 text-xl font-semibold'>Multiplayer</h2>
-            <button onClick={createGame} className='bg-sky-600 text-white p-3 rounded-md'>Kreiraj link</button>
-            <a href='' id='linkGame'></a>
-            <div className="mt-2">
-                <button onClick={copyLink} className="bg-gray-500 text-white p-2 rounded-md">
-                  Kopiraj link
-                </button>
-                <button onClick={shareOnFacebook} className="bg-blue-600 text-white p-2 rounded-md ml-2">
-                  Dijeli na Facebooku
-                </button>
-              </div>
+            <p className="mt-4 leading-relaxed">
+              Slagalica se sastoji od sekvence šest kratkih igara (Slagalica, Moj broj,
+              Kombinacije, Spojnice, Kviz znanja i Asocijacije) u trajanju oko 10–12 minuta.
+              Igrači koriste znanje i taktiku kako bi pobijedili protivnika u direktnom duelu.
+            </p>
+
+            <div className="mt-6 grid grid-cols-2 gap-4">
+              {[
+                { t: "Slagalica", i: "🧩" },
+                { t: "Moj broj", i: "🔢" },
+                { t: "Kombinacije", i: "🎰" },
+                { t: "Spojnice", i: "🔗" },
+                { t: "Kviz", i: "❓" },
+                { t: "Asocijacije", i: "🧠" },
+              ].map((x) => (
+                <div
+                  key={x.t}
+                  className="rounded-2xl bg-black/25 border border-white/10 p-4 text-white shadow-inner"
+                >
+                  <div className="text-2xl">{x.i}</div>
+                  <div className="mt-2 font-extrabold uppercase tracking-widest text-sm">
+                    {x.t}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </>
-    );
+
+          {/* RIGHT: ACTIONS */}
+          <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 sm:p-10">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/30 border border-white/10 text-white/80 text-xs uppercase tracking-widest">
+              🚀 Start
+            </div>
+
+            {/* SINGLE */}
+            <div className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-6 shadow-inner">
+              <h3 className="text-white text-xl font-extrabold tracking-widest uppercase">
+                Singleplayer
+              </h3>
+              <p className="text-white/70 mt-2">
+                Igraj sam i treniraj brzinu i taktiku.
+              </p>
+
+              <a
+                href="/singleplayer"
+                className="mt-5 inline-flex w-full justify-center py-4 rounded-full font-extrabold uppercase tracking-widest
+                  bg-gradient-to-r from-emerald-500 to-green-700 text-white shadow-[0_0_35px_rgba(16,185,129,0.55)]
+                  hover:scale-[1.02] active:scale-95 transition"
+              >
+                Započni igru
+              </a>
+            </div>
+
+            {/* MULTI */}
+            <div className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-6 shadow-inner">
+              <h3 className="text-white text-xl font-extrabold tracking-widest uppercase">
+                Multiplayer
+              </h3>
+              <p className="text-white/70 mt-2">
+                Kreiraj link i pošalji prijatelju — igrajte 1v1.
+              </p>
+
+              <button
+                onClick={createGame}
+                className="mt-5 w-full py-4 rounded-full font-extrabold uppercase tracking-widest
+                  bg-gradient-to-r from-sky-500 to-blue-700 text-white shadow-xl
+                  hover:scale-[1.02] active:scale-95 transition"
+              >
+                🔗 Kreiraj link
+              </button>
+
+              {/* LINK CARD */}
+              <div className="mt-5 rounded-2xl bg-white/10 border border-white/15 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-white/80 text-xs uppercase tracking-widest">
+                    Tvoj link
+                  </p>
+                  {roomName ? (
+                    <span className="px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-widest bg-emerald-600 text-white">
+                      Spreman
+                    </span>
+                  ) : (
+                    <span className="px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-widest bg-white/10 text-white/70">
+                      Nije kreiran
+                    </span>
+                  )}
+                </div>
+
+                <a
+                  href={roomName ? `/game/${roomName}` : "#"}
+                  className={`mt-2 block break-all font-mono text-sm sm:text-base
+                    ${roomName ? "text-white underline underline-offset-4" : "text-white/40 cursor-not-allowed"}`}
+                  onClick={(e) => !roomName && e.preventDefault()}
+                >
+                  {roomName ? gameUrl : "Klikni 'Kreiraj link' da dobiješ URL"}
+                </a>
+
+                {/* ACTION BUTTONS */}
+                <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <button
+                    onClick={copyLink}
+                    disabled={!roomName}
+                    className={`py-3 rounded-2xl font-extrabold uppercase tracking-widest transition shadow
+                      ${roomName
+                        ? "bg-gray-800/70 text-white hover:scale-[1.02] active:scale-95"
+                        : "bg-gray-800/30 text-white/40 cursor-not-allowed"
+                      }`}
+                  >
+                    {copied ? "✅ Kopirano" : "Kopiraj"}
+                  </button>
+
+                  <button
+                    onClick={shareOnMessenger}
+                    disabled={!roomName}
+                    className={`py-3 rounded-2xl font-extrabold uppercase tracking-widest transition shadow
+                      ${roomName
+                        ? "bg-gradient-to-r from-fuchsia-600 to-pink-700 text-white hover:scale-[1.02] active:scale-95"
+                        : "bg-white/10 text-white/40 cursor-not-allowed"
+                      }`}
+                  >
+                    Messenger
+                  </button>
+                </div>
+
+                {/* TIP */}
+                <p className="mt-4 text-white/60 text-xs">
+                  Messenger: klik na dugme otvara chat gdje samo zalijepiš i pošalješ link. Ako si na mobitelu, radi još brže.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default App;

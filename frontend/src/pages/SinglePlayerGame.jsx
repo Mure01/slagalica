@@ -182,9 +182,7 @@ const SinglePlayerGame = () => {
         <p className="pt-4">Molimo sacekajte da se protivnik pridruzi</p>
         </div> :
       <>
-      <div className="flex justify-between py-3 px-3">
-        <p  className="text-center w-full uppercase text-xl">{gameName}</p>
-      </div>
+     
       <GamePage
         props={{
           setGameName,
