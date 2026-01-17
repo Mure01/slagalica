@@ -33,7 +33,7 @@ Igra se sastoji od više različitih igara koje testiraju znanje i logiku igrač
 ### Backend
 1. Kloniraj repozitorij:
    ```sh
-   git clone https://github.com/korisnik/slagalica.git
+   git clone https://github.com/Mure01/slagalica.git
    cd slagalica/backend
    ```
 2. Instaliraj zavisnosti:
