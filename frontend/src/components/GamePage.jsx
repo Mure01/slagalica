@@ -10,7 +10,7 @@ const GamePage = ({props}) => {
   const singlePlayer = window.location.href.includes("singleplayer")
   return (
  <>
-  <div className="min-h-[70vh] px-4 mt-16">
+  <div className="min-h-[70vh] px-1  sm:px-4 sm:mt-16">
     {!props.gameName ? (
       <div className="max-w-4xl mx-auto">
 
@@ -22,9 +22,6 @@ const GamePage = ({props}) => {
           <h1 className="mt-4 text-3xl sm:text-4xl font-extrabold tracking-widest uppercase text-white drop-shadow">
             Odaberite igru
           </h1>
-          <p className="mt-2 text-white/70">
-            Klikni igru da započneš rundu. Igrane igre su zaključane.
-          </p>
         </div>
 
         {/* LIST */}

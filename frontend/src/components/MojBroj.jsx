@@ -110,8 +110,8 @@ const MojBroj = ({props}) => {
       className="
         rounded-3xl bg-gradient-to-br text-white from-purple-600 to-indigo-700
         shadow-[0_0_60px_rgba(99,102,241,0.7)]
-        px-6 py-4 sm:px-10 sm:py-6
-        text-3xl sm:text-5xl font-extrabold tracking-widest
+       px-6 py-4 sm:px-10 sm:py-6
+        text-xl sm:text-5xl font-extrabold tracking-widest
       "
     >
       {mainNumber}
@@ -133,8 +133,8 @@ const MojBroj = ({props}) => {
                 disabled={used}
                 onClick={() => handleNumberClick(number, index)}
                 className={`
-                  rounded-2xl text-white transition shadow-xl font-extrabold
-                  w-14 h-14 text-lg
+                  rounded-md text-white transition shadow-xl font-extrabold
+                  w-10 h-10 sm:w-14 sm:h-14 text-lg
                   sm:w-20 sm:h-20 sm:text-2xl
                   ${used
                     ? "bg-gray-500/40 text-gray-300 cursor-not-allowed"
@@ -162,8 +162,8 @@ const MojBroj = ({props}) => {
                 disabled={used}
                 onClick={() => handleNumberClick(val, key)}
                 className={`
-                  rounded-3xl text-white transition shadow-xl font-extrabold
-                  w-16 h-16 text-lg
+                  rounded-md text-white transition shadow-xl font-extrabold
+                  w-10 h-10 sm:w-16 sm:h-16 text-lg
                   sm:w-24 sm:h-24 sm:text-2xl
                   ${used
                     ? "bg-gray-500/40 cursor-not-allowed"
@@ -180,13 +180,13 @@ const MojBroj = ({props}) => {
 
       {/* OPERATORS */}
       <div className="w-full lg:w-72">
-        <div className="grid grid-cols-3 sm:grid-cols-2 gap-2 sm:gap-4">
+        <div className="grid grid-cols-4 sm:grid-cols-3 gap-2 sm:gap-4">
           {["+", "-", "*", "/", "(", ")"].map((op) => (
             <button
               key={op}
               onClick={() => handleOperationClick(op)}
               className="
-                rounded-2xl bg-gradient-to-br from-fuchsia-600 to-pink-700 text-white shadow-xl transition font-extrabold
+                rounded-md bg-gradient-to-br from-fuchsia-600 to-pink-700 text-white shadow-xl transition font-extrabold
                 h-12 text-xl
                 sm:h-16 sm:text-2xl
                 active:scale-95 sm:hover:scale-110
@@ -199,7 +199,7 @@ const MojBroj = ({props}) => {
           <button
             onClick={handleClear}
             className="
-              col-span-3 sm:col-span-2
+              col-span-2 sm:col-span-2
               h-12 sm:h-16 rounded-2xl bg-red-600 text-white font-extrabold shadow-xl transition
               active:scale-95 sm:hover:bg-red-700
             "

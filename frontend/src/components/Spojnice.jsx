@@ -82,22 +82,19 @@ const Spojnice = ({ props }) => {
     socketId={socketId}
   />
 
-  <div className="min-h-[70vh] px-4 mt-10">
+  <div className="min-h-[70vh] p-0 sm:px-4 mt-20">
     {/* MAIN WRAPPER */}
-    <div className="max-w-5xl mx-auto bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 sm:p-10">
+    <div className="w-full sm:max-w-5xl mx-auto bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p- 1 sm:p-6 sm:p-10">
 
       {/* HEADER */}
       <div className="text-center mb-8">
-        <h2 className="text-2xl sm:text-4xl font-extrabold tracking-widest uppercase text-white drop-shadow">
+        <h2 className="text-md  sm:text-4xl font-extrabold tracking-widest uppercase text-sky-600 drop-shadow">
           {spojnica.naziv}
         </h2>
-        <p className="text-white/70 mt-2">
-          Klikni lijevo pa desno da spojiš par. Tačno = zeleno, netačno = crveno.
-        </p>
       </div>
 
       {/* COLUMNS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 gap-6">
         
         {/* LEFT */}
         <div className="bg-black/20 rounded-3xl border border-white/10 shadow-inner p-4 sm:p-6">
@@ -110,7 +107,7 @@ const Spojnice = ({ props }) => {
               const pair = selectedItems.find(p => p.left === item);
 
               const base =
-                "w-full py-4 px-3 rounded-2xl text-center uppercase font-extrabold tracking-wide transition shadow-xl select-none";
+                "w-full py-4 px-3 rounded-2xl text-center uppercase  text-sm sm:font-extrabold sm:tracking-wide transition shadow-xl select-none";
 
               const state = pair
                 ? pair.isCorrect
@@ -144,7 +141,7 @@ const Spojnice = ({ props }) => {
               const pair = selectedItems.find(p => p.right === item);
 
               const base =
-                "w-full py-4 px-3 rounded-2xl text-center uppercase font-extrabold tracking-wide transition shadow-xl select-none";
+                "w-full py-4 px-3 rounded-2xl text-center uppercase text-sm  sm:font-extrabold sm:tracking-wide transition shadow-xl select-none";
 
               const state = pair
                 ? pair.isCorrect

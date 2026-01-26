@@ -130,7 +130,7 @@ const Skocko = ({ props }) => {
     socketId={socketId}
   />
 
-  <div className="min-h-[70vh] px-4 mt-10">
+  <div className="min-h-[70vh] sm:px-4 mt-20">
     {/* BOARD WRAPPER */}
     <div className="max-w-3xl mx-auto bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 sm:p-8">
 
@@ -139,9 +139,6 @@ const Skocko = ({ props }) => {
         <h2 className="text-2xl sm:text-3xl font-extrabold tracking-widest uppercase text-white drop-shadow">
           Skocko
         </h2>
-        <p className="text-white/70 mt-2">
-          Klikni ikone dole da popuniš red. Klik na ikonu u redu briše.
-        </p>
       </div>
 
       {/* GRID */}
@@ -152,7 +149,7 @@ const Skocko = ({ props }) => {
             className="w-full flex items-center gap-3"
           >
             {/* ROW CELLS */}
-            <div className="flex-1 grid grid-cols-5 gap-2">
+            <div className="flex-1 grid grid-cols-4 gap-2">
               {polje.map((number, indexk) => (
                 <button
                   key={indexk}
@@ -222,8 +219,7 @@ const Skocko = ({ props }) => {
           <button
             key={index}
             onClick={() => handleChange(number)}
-            className="flex-1 min-w-[90px] h-16 sm:h-20 rounded-2xl
-              bg-gradient-to-br from-emerald-500/80 to-green-700/80
+            className="flex-1 sm:min-w-[90px] h-16 sm:h-20 rounded-md
               border border-white/15 shadow-xl
               hover:scale-105 active:scale-95 transition
               flex items-center justify-center"

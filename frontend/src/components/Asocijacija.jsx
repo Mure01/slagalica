@@ -219,27 +219,24 @@ const Asocijacija = ({ props }) => {
   )}
 
   {/* BOARD */}
-  <div className="min-h-[70vh] px-4 mt-20">
-    <div className="max-w-5xl mx-auto bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 sm:p-10">
+  <div className="min-h-[70vh] sm:px-4 mt-20">
+    <div className="max-w-5xl mx-auto bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl sm:p-6 sm:p-10">
 
       {/* HEADER */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/30 border border-white/10 text-white/80 text-xs uppercase tracking-widest">
           🧠 Asocijacija
         </div>
-        <h2 className="mt-3 text-2xl sm:text-4xl font-extrabold tracking-widest uppercase text-white drop-shadow">
+        <h2 className="mt-3 text-md sm:text-4xl font-extrabold tracking-widest uppercase text-sky-600  drop-shadow">
           Pogodi pojmove i konacno rjesenje
         </h2>
-        <p className="text-white/70 mt-2">
-          Klikni polja da otkrijes pojmove ili klikni A/B/C/D i unesi rjesenje.
-        </p>
       </div>
 
       {/* 4 BLOCKS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-6">
 
         {/* BLOCK A */}
-        <div className="rounded-3xl bg-black/20 border border-white/10 shadow-inner p-5">
+        <div className="rounded-3xl bg-black/20 border border-white/10 shadow-inner p-1 sm:p-5">
           <div className="flex items-center justify-between mb-4">
             <span className="text-white font-extrabold tracking-widest text-xl">A</span>
             <button
@@ -263,7 +260,7 @@ const Asocijacija = ({ props }) => {
                   <button
                     key={index}
                     onClick={() => showItem(item)}
-                    className="min-h-14 rounded-2xl font-extrabold uppercase tracking-widest text-white shadow-xl transition
+                    className="min-h-14 rounded-md text-sm sm:font-extrabold uppercase sm:tracking-widest text-white shadow-xl transition
                       bg-gradient-to-br from-sky-500/80 to-blue-700/80 hover:scale-[1.02] active:scale-95 border border-white/10"
                   >
                     {revealed ? item : `A${index + 1}`}
@@ -290,7 +287,7 @@ const Asocijacija = ({ props }) => {
         </div>
 
         {/* BLOCK B */}
-        <div className="rounded-3xl bg-black/20 border border-white/10 shadow-inner p-5">
+        <div className="rounded-3xl bg-black/20 border border-white/10 shadow-inner p-1 sm:p-5">
           <div className="flex items-center justify-between mb-4">
             <span className="text-white font-extrabold tracking-widest text-xl">B</span>
             <button
@@ -314,7 +311,7 @@ const Asocijacija = ({ props }) => {
                   <button
                     key={index}
                     onClick={() => showItem(item)}
-                    className="min-h-14 rounded-2xl font-extrabold uppercase tracking-widest text-white shadow-xl transition
+                    className="min-h-14 rounded-md text-sm sm:font-extrabold uppercase sm:tracking-widest text-white shadow-xl transition
                       bg-gradient-to-br from-sky-500/80 to-blue-700/80 hover:scale-[1.02] active:scale-95 border border-white/10"
                   >
                     {revealed ? item : `B${index + 1}`}
@@ -354,9 +351,9 @@ const Asocijacija = ({ props }) => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-6">
         {/* BLOCK C */}
-        <div className="rounded-3xl bg-black/20 border border-white/10 shadow-inner p-5">
+        <div className="rounded-3xl bg-black/20 border border-white/10 shadow-inner p-1 sm:p-5">
           <div className="flex items-center justify-between mb-4">
             <span className="text-white font-extrabold tracking-widest text-xl">C</span>
             <button
@@ -380,7 +377,7 @@ const Asocijacija = ({ props }) => {
                   <button
                     key={index}
                     onClick={() => showItem(item)}
-                    className="min-h-14 rounded-2xl font-extrabold uppercase tracking-widest text-white shadow-xl transition
+                    className="min-h-14 rounded-md text-sm sm:font-extrabold uppercase sm:tracking-widest text-white shadow-xl transition
                       bg-gradient-to-br from-sky-500/80 to-blue-700/80 hover:scale-[1.02] active:scale-95 border border-white/10"
                   >
                     {revealed ? item : `C${index + 1}`}
@@ -407,7 +404,7 @@ const Asocijacija = ({ props }) => {
         </div>
 
         {/* BLOCK D */}
-        <div className="rounded-3xl bg-black/20 border border-white/10 shadow-inner p-5">
+        <div className="rounded-3xl bg-black/20 border border-white/10 shadow-inner p-1 sm:p-5">
           <div className="flex items-center justify-between mb-4">
             <span className="text-white font-extrabold tracking-widest text-xl">D</span>
             <button
@@ -431,7 +428,7 @@ const Asocijacija = ({ props }) => {
                   <button
                     key={index}
                     onClick={() => showItem(item)}
-                    className="min-h-14 rounded-2xl font-extrabold uppercase tracking-widest text-white shadow-xl transition
+                    className="min-h-14 rounded-md text-sm sm:font-extrabold uppercase sm:tracking-widest text-white shadow-xl transition
                       bg-gradient-to-br from-sky-500/80 to-blue-700/80 hover:scale-[1.02] active:scale-95 border border-white/10"
                   >
                     {revealed ? item : `D${index + 1}`}

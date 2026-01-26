@@ -56,15 +56,15 @@ const Kviz = ({ props }) => {
       {/* TOP BAR: PROGRESS + SCORE */}
       <div className="mb-6 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-5 sm:p-6">
         <div className="flex items-center justify-between gap-4">
-          <div className="text-white">
-            <p className="text-xs uppercase tracking-widest text-white/70">Pitanje</p>
+          <div className="">
+            <p className="text-xs uppercase tracking-widest ">Pitanje</p>
             <p className="text-2xl font-extrabold">
-              {currentQuestion + 1} <span className="text-white/60">/ {kviz.length}</span>
+              {currentQuestion + 1} <span className="">/ {kviz.length}</span>
             </p>
           </div>
 
-          <div className="text-right text-white">
-            <p className="text-xs uppercase tracking-widest text-white/70">Bodovi</p>
+          <div className="text-right ">
+            <p className="text-xs uppercase tracking-widest ">Bodovi</p>
             <p className="text-2xl font-extrabold">
               {points}
             </p>
@@ -101,7 +101,7 @@ const Kviz = ({ props }) => {
               </div>
 
               {/* ANSWERS */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-1 sm:gap-4">
                 {pitanje.odgovori.map((odgovor, i) => {
                   let cls =
                     "bg-gradient-to-br from-sky-500 to-blue-700 hover:scale-[1.02] active:scale-95";
@@ -129,7 +129,7 @@ const Kviz = ({ props }) => {
                       onClick={() => !showFeedback && checkAnswer(i)}
                       disabled={showFeedback}
                       className={`
-                        w-full min-h-[64px] rounded-2xl px-5 py-5
+                        w-full min-h-[64px] rounded-2xl p-1 sm:px-5 sm:py-5
                         text-white font-extrabold uppercase tracking-wide
                         shadow-xl border border-white/10 transition
                         ${cls}
@@ -151,7 +151,7 @@ const Kviz = ({ props }) => {
                         )}
                       </div>
 
-                      <div className="mt-2 text-lg sm:text-xl">
+                      <div className="mt-2 text-sm sm:text-xl">
                         {odgovor}
                       </div>
                     </button>

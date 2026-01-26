@@ -77,7 +77,7 @@ const Slagalica = ({props}) => {
 
       {/* RIJEC + DELETE */}
       <div className="flex items-center gap-4 mb-6">
-        <div className="flex-1 text-center text-4xl font-extrabold tracking-widest uppercase py-4 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-lg">
+        <div className="flex-1 text-center sm:text-4xl font-extrabold tracking-widest uppercase py-4 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-lg">
           {word || "— — — —"}
         </div>
 
@@ -94,7 +94,7 @@ const Slagalica = ({props}) => {
         className={`text-center text-lg font-bold uppercase py-3 rounded-xl mb-8 tracking-wide shadow-md
           ${
             isValid
-              ? "bg-green-600/90 text-white animate-pulse"
+              ? "bg-green-600/90 text-white "
               : "bg-red-600/90 text-white"
           }
         `}
@@ -113,7 +113,8 @@ const Slagalica = ({props}) => {
               disabled={used}
               onClick={() => changeWord(letter, index)}
               className={`
-                w-16 h-16 text-2xl font-extrabold uppercase rounded-2xl shadow-lg transition
+                w-8 h-9
+                sm:w-16 sm:h-16 text-2xl font-extrabold uppercase rounded-md shadow-lg transition
                 ${
                   used
                     ? "bg-gray-500/50 text-gray-300 cursor-not-allowed"
@@ -131,7 +132,7 @@ const Slagalica = ({props}) => {
       <div className="flex justify-center">
         <button
           onClick={confirmWord}
-          className="px-12 py-4 text-xl font-extrabold uppercase rounded-full
+          className="px-3 sm:px-12 py-4 text-xl font-extrabold uppercase rounded-full
             bg-gradient-to-r from-emerald-500 to-green-600
             text-white shadow-2xl
             hover:scale-105 active:scale-95 transition
