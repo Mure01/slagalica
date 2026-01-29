@@ -24,6 +24,8 @@ const Kviz = ({ props }) => {
 
     if (correctAnswer === playerAnswer) {
       setPoints((prevPoints) => prevPoints + 3);
+    } else {
+      setPoints((prevPoints) => (prevPoints > 0 ? prevPoints - 1 : 0));
     }
 
     setTimeout(() => {

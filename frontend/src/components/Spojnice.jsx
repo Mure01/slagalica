@@ -94,7 +94,7 @@ const Spojnice = ({ props }) => {
       </div>
 
       {/* COLUMNS */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 sm:gap-6">
         
         {/* LEFT */}
         <div className="bg-black/20 rounded-3xl border border-white/10 shadow-inner p-4 sm:p-6">

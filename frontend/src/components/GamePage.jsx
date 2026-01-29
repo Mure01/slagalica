@@ -26,7 +26,7 @@ const GamePage = ({props}) => {
 
         {/* LIST */}
         <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-5 sm:p-8">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2 sm:gap-4">
             {[
               { name: "Slagalica", myPoints: props.slagalicaPoints, enemyPoints: props.enemySlagalicaPoints, icon: "🧩" },
               { name: "MojBroj", myPoints: props.mojBrojPoints, enemyPoints: props.enemyMojBrojPoints, icon: "🔢" },
@@ -51,18 +51,18 @@ const GamePage = ({props}) => {
                     }
                   `}
                 >
-                  <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center justify-between sm:gap-4">
                     {/* LEFT SIDE */}
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center sm:gap-4">
                       <div className={`
-                        h-12 w-12 rounded-2xl flex items-center justify-center text-2xl shadow
+                        h-6 w-6 sm:h-12 sm:w-12 mr-2  rounded-2xl flex items-center justify-center sm:text-2xl shadow
                         ${played ? "bg-black/20" : "bg-black/30"}
                       `}>
                         {game.icon}
                       </div>
 
                       <div>
-                        <p className="text-lg sm:text-xl font-extrabold tracking-widest uppercase">
+                        <p className="text-md sm:text-xl font-extrabold tracking-widest uppercase">
                           {game.name}
                         </p>
                         <p className="text-xs uppercase tracking-widest text-white/70">
